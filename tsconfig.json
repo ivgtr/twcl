@@ -1,0 +1,15 @@
+{
+  "target": "ESNEXT",
+  "module": "ESNext",
+  "sourceMap": true,
+  "compilerOptions": {
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "baseUrl": ".",
+    "outDir": "./dist/",
+    "lib": [ "es2015" ]
+  },
+  "include": [
+    "./src/**/*"
+  ]
+}
