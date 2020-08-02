@@ -1,29 +1,17 @@
-import inquirer from 'inquirer'
+import Twitter from 'twitter'
+import {
+  TWITTER_CONSUMER_KEY,
+  TWITTER_CONSUMER_SECRET_KEY
+} from '../configs/config.json'
 
-const main = (tweet?: string): boolean => {
-  if (tweet) {
-    console.log(tweet)
-    return true
-  }
+const client = new Twitter({})
 
-  inquirer
-    .prompt([
-      {
-        name: 'tweet',
-        message: 'ツイートを入力',
-        default: ''
-      }
-    ])
-    .then((answers: any) => {
-      console.log(answers.tweet)
-      return true
-    })
-    .catch((e) => {
-      console.log(e)
-      return false
-    })
+const Tweet = async () => {
+  console.log('やあ')
 
-  return false
+  await setTimeout(() => {
+    console.log('test')
+  }, 1000)
 }
 
-export default main
+export default Tweet
