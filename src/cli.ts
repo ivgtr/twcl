@@ -1,9 +1,20 @@
 import program from 'commander'
+import Datastore from 'nedb'
 
 import tweet from './commands/tweet'
 import { Login } from './commands/auth'
 
 const main = (): void => {
+  const db = new Datastore({
+    filename: 'configs/setting.db'
+  })
+  db.loadDatabase()
+
+  if (!db) {
+    Login()
+    return
+  }
+
   program
     .option('-l, --login', 'ログインする')
     .option('-lo, --logout', 'ログアウトする')
