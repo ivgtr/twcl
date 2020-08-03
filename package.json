@@ -15,12 +15,15 @@
     "commander": "^6.0.0",
     "crypto": "^1.0.1",
     "inquirer": "^7.3.3",
+    "nedb": "^1.8.0",
     "oauth-1.0a": "^2.2.6",
     "open": "^7.1.0",
+    "prompts": "^2.3.2",
     "twitter": "^1.7.1"
   },
   "devDependencies": {
     "@types/inquirer": "^7.3.0",
+    "@types/nedb": "^1.8.10",
     "@types/node": "^14.0.27",
     "@types/twitter": "^1.7.0",
     "eslint": "^7.5.0",
