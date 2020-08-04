@@ -2,7 +2,7 @@ import program from 'commander'
 import Datastore from 'nedb'
 
 import tweet from './commands/tweet'
-import { Login } from './commands/auth'
+import { Login } from './commands/oauth'
 
 const main = (): void => {
   const db = new Datastore({
