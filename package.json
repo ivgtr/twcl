@@ -2,7 +2,7 @@
   "name": "tcl",
   "version": "0.0.1",
   "description": "nodeで作られたcli上のtwitterクライアント",
-  "main": "./dist/index.js",
+  "main": "./lib/index.js",
   "scripts": {
     "start": "tsc -w",
     "build": "tsc"

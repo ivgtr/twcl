@@ -6,7 +6,7 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "baseUrl": ".",
-    "outDir": "./dist/",
+    "outDir": "./lib/",
     "lib": [ "es2015" ]
   },
   "include": [
@@ -14,6 +14,6 @@
   ],
   "exclude": [
     "node_modules",
-    "dist"
+    "lib"
   ]
 }
