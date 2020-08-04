@@ -66,11 +66,30 @@ const inputUser = async (): Promise<boolean> => {
       )
       return true
     } catch (err) {
-      console.log(`${err}\n不明なエラーです`)
-      return inputUser()
+      const { replay } = await prompts([
+        {
+          type: 'text',
+          name: 'replay',
+          message: '不明なエラーです、再度入力しますか？'
+        }
+      ])
+      if (replay === 'y') {
+        return inputUser()
+      }
+      return false
     }
   }
-  return inputUser()
+  const { replay } = await prompts([
+    {
+      type: 'text',
+      name: 'replay',
+      message: '不明なエラーです、再度入力しますか？(y/N)'
+    }
+  ])
+  if (replay === 'y') {
+    return inputUser()
+  }
+  return false
 }
 
 export const Login = async (): Promise<void> => {
