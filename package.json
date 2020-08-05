@@ -1,5 +1,5 @@
 {
-  "name": "tcl",
+  "name": "twcl",
   "version": "0.0.1",
   "description": "nodeで作られたcli上のtwitterクライアント",
   "main": "./lib/index.js",
