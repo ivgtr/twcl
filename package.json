@@ -3,6 +3,10 @@
   "version": "0.0.1",
   "description": "nodeで作られたcli上のtwitterクライアント",
   "main": "./lib/index.js",
+  "preferGlobal": true,
+  "bin":{
+    "twcl": "./lib/index.js"
+  },
   "scripts": {
     "start": "tsc -w",
     "build": "tsc"
