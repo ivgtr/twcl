@@ -2,8 +2,9 @@ import axios from 'axios'
 import crypto from 'crypto'
 import Datastore from 'nedb'
 import open from 'open'
-import OAuth, { RequestOptions, Options, Token } from 'oauth-1.0a'
+import OAuth, { RequestOptions, Options } from 'oauth-1.0a'
 import prompts from 'prompts'
+
 import {
   TWITTER_CONSUMER_KEY,
   TWITTER_CONSUMER_SECRET_KEY,
@@ -11,128 +12,165 @@ import {
   TWITTER_OAUTH_CALLBACK_URL
 } from '../configs/config.json'
 
-const oauthUrl = TWITTER_OAUTH_URL
-const oauthCallback = TWITTER_OAUTH_CALLBACK_URL
-const requestData: RequestOptions = {
-  url: `${oauthUrl}/request_token`,
-  method: 'POST',
-  data: { oauth_verifier: oauthCallback }
+const options: Options = {
+  consumer: {
+    key: TWITTER_CONSUMER_KEY,
+    secret: TWITTER_CONSUMER_SECRET_KEY
+  },
+  signature_method: 'HMAC-SHA1',
+  hash_function(baseString, key) {
+    return crypto.createHmac('sha1', key).update(baseString).digest('base64')
+  }
 }
 
-const inputUser = async (): Promise<boolean> => {
-  const { accessToken, accessTokenSecret, userName } = await prompts([
-    {
-      type: 'text',
-      name: 'accessToken',
-      message: '公開アクセストークンを入力してください'
-    },
-    {
-      type: 'text',
-      name: 'accessTokenSecret',
-      message: '秘密アクセストークンを入力してください'
-    },
-    {
-      type: 'text',
-      name: 'userName',
-      message: '表示名を入力してください'
-    }
-  ])
-
-  if (accessToken && accessTokenSecret && userName) {
-    console.log(`ようこそ、${userName}`)
-
-    try {
-      const db = await new Datastore({
-        filename: 'configs/setting.db'
-      })
-      await db.loadDatabase()
-      await db.insert(
-        {
-          user_selected: userName,
-          user_list: [
-            {
-              user_name: userName,
-              user_token: accessToken,
-              user_token_secret: accessTokenSecret
-            }
-          ]
-        },
-        (error, newDoc) => {
-          if (error !== null) {
-            console.error(error)
-          }
-          console.log(newDoc)
-        }
-      )
-      return true
-    } catch (err) {
-      const { replay } = await prompts([
-        {
-          type: 'text',
-          name: 'replay',
-          message: '不明なエラーです、再度入力しますか？'
-        }
-      ])
-      if (replay === 'y') {
-        return inputUser()
-      }
-      return false
-    }
-  }
-  const { replay } = await prompts([
-    {
-      type: 'text',
-      name: 'replay',
-      message: '不明なエラーです、再度入力しますか？(y/N)'
-    }
-  ])
-  if (replay === 'y') {
-    return inputUser()
-  }
-  return false
+const oauthInstance = (): OAuth => {
+  return new OAuth(options)
 }
 
-export const Login = async (): Promise<void> => {
-  const options: Options = {
-    consumer: {
-      key: TWITTER_CONSUMER_KEY,
-      secret: TWITTER_CONSUMER_SECRET_KEY
-    },
-    signature_method: 'HMAC-SHA1',
-    hash_function(baseString, key) {
-      return crypto.createHmac('sha1', key).update(baseString).digest('base64')
-    }
-  }
-  const getOauthInstance = (): OAuth => {
-    return new OAuth(options)
+const getOauthToken = async (): Promise<{
+  oauthToken?: string
+  oauthTokenSecret?: string
+}> => {
+  const requestData: RequestOptions = {
+    url: `${TWITTER_OAUTH_URL}/request_token`,
+    method: 'POST',
+    data: { oauth_verifier: TWITTER_OAUTH_CALLBACK_URL }
   }
 
   try {
     const responce = await axios.post(
-      `${oauthUrl}/request_token`,
+      `${TWITTER_OAUTH_URL}/request_token`,
       {},
       {
-        headers: getOauthInstance().toHeader(
-          getOauthInstance().authorize(requestData)
+        headers: oauthInstance().toHeader(
+          oauthInstance().authorize(requestData)
         )
       }
     )
-    const token: Token = responce.data.split('&')[0].split('=')[1]
-    await open(`${oauthUrl}/authorize?oauth_token=${token}`)
-    if (await inputUser()) {
-      console.log('ok')
-    } else {
-      console.log('error!! もう一度初めからどうぞ')
-    }
+    const oauthToken: string = responce.data.split('&')[0].split('=')[1]
+    const oauthTokenSecret: string = responce.data.split('&')[1].split('=')[1]
+
+    return { oauthToken, oauthTokenSecret }
   } catch (err) {
-    console.log(err)
+    console.error(
+      'Twitter APIに問題があるようです・・・時間を空けてからもう一度試してみてください。'
+    )
+    return {}
+  }
+}
+const getAccessToken = async (
+  oauthToken: string,
+  oauthTokenSecret: string,
+  oauthVerifier: string
+): Promise<{
+  accessToken?: string
+  accessTokenSecret?: string
+}> => {
+  const requestData: RequestOptions = {
+    url: `${TWITTER_OAUTH_URL}/access_token`,
+    method: 'POST',
+    data: {
+      oauth_token: oauthToken,
+      oauth_token_secret: oauthTokenSecret,
+      oauth_verifier: oauthVerifier
+    }
+  }
+
+  try {
+    const responce = await axios.post(
+      `${TWITTER_OAUTH_URL}/access_token`,
+      {},
+      {
+        headers: oauthInstance().toHeader(
+          oauthInstance().authorize(requestData)
+        )
+      }
+    )
+    const accessToken: string = responce.data.split('&')[0].split('=')[1]
+    const accessTokenSecret: string = responce.data.split('&')[1].split('=')[1]
+
+    return { accessToken, accessTokenSecret }
+  } catch (err) {
+    console.error(
+      'Error: 入力されたトークンに問題があるようです...もう一度最初から入力してください。'
+    )
+    return {}
   }
 }
 
-export const Logout = async () => {
-  console.log('やあ')
+const userInput = async (): Promise<{
+  oauthVerifier?: string
+  userName?: string
+}> => {
+  try {
+    const onCancel = () => {
+      console.error(
+        'Error: 入力内容が確認できませんでした...もう一度最初から入力してください。'
+      )
+    }
+    const {
+      oauthVerifier,
+      userName
+    }: { oauthVerifier: string; userName: string } = await prompts(
+      [
+        {
+          type: 'text',
+          name: 'oauthVerifier',
+          message: 'ブラウザに表示されたトークンを入力してください',
+          validate: (value) => (!value ? '何か入力してください' : true)
+        },
+        {
+          type: 'text',
+          name: 'userName',
+          message: '表示名を入力してください',
+          validate: (value) => (!value ? '何か入力してください' : true)
+        }
+      ],
+      { onCancel }
+    )
+    return { oauthVerifier, userName }
+  } catch (err) {
+    return {}
+  }
+}
 
-  await setTimeout(() => {
-    console.log('test')
-  }, 1000)
+const setDb = async (
+  accessToken: string,
+  accessTokenSecret: string,
+  userName: string
+) => {
+  console.log(accessToken)
+  console.log(accessTokenSecret)
+  console.log(userName)
+}
+
+export const Login = async (): Promise<boolean> => {
+  const { oauthToken, oauthTokenSecret } = await getOauthToken()
+  if (oauthToken && oauthTokenSecret) {
+    await open(`${TWITTER_OAUTH_URL}/authenticate?oauth_token=${oauthToken}`)
+  } else {
+    return false
+  }
+  const { oauthVerifier, userName } = await userInput()
+  if (oauthVerifier && userName) {
+    console.log(`ようこそ、${userName}!`)
+  } else {
+    return false
+  }
+  const { accessToken, accessTokenSecret } = await getAccessToken(
+    oauthToken,
+    oauthTokenSecret,
+    oauthVerifier
+  )
+  if (accessToken && accessTokenSecret) {
+    await setDb(accessToken, accessTokenSecret, userName)
+  } else {
+    return false
+  }
+  return true
+}
+
+export const Logout = (): boolean => {
+  console.log('logout')
+  return true
 }
