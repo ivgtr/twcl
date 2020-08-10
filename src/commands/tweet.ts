@@ -61,7 +61,7 @@ const checkUser = (db: Nedb, tweet: string): any => {
     { selected: true },
     async (err, result: Token[]): Promise<boolean> => {
       if (!err) {
-        const { accessToken, accessTokenSecret } = result[0]
+        const { accessToken, accessTokenSecret } = result.slice(-1)[0] // 変更
         if (await postTweet(accessToken, accessTokenSecret, tweet)) {
           console.log('Success: 送信完了')
           return true
