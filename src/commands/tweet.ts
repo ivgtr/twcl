@@ -1,29 +1,96 @@
-import Twitter from 'twitter'
-import {
-  TWITTER_CONSUMER_KEY,
-  TWITTER_CONSUMER_SECRET_KEY
-} from '../configs/config.json'
+import axios from 'axios'
+import Nedb from 'nedb'
+import prompts from 'prompts'
 
-const client = new Twitter({
-  consumer_key: TWITTER_CONSUMER_KEY,
-  consumer_secret: TWITTER_CONSUMER_SECRET_KEY,
-  access_token_key: '',
-  access_token_secret: ''
-})
+type Token = {
+  type?: string
+  name?: string
+  accessToken: string
+  accessTokenSecret: string
+  selected?: boolean
+}
 
-const Tweet = async (): Promise<void> => {
-  const content = '帰る'
-  await client.post(
-    'statuses/update',
-    { status: content },
-    (error, tweet, response) => {
-      if (!error) {
-        console.log(`tweet success: ${tweet}`)
-      } else {
-        console.log(error)
+const middlewareUrl = 'http://localhost:5000'
+
+const inputTweet = async (): Promise<{
+  input: string
+}> => {
+  try {
+    const onCancel = () => {
+      console.error(
+        'Error: 入力内容が確認できませんでした...もう一度最初から入力してください。'
+      )
+    }
+    const { input }: { input: string } = await prompts(
+      [
+        {
+          type: 'text',
+          name: 'input',
+          message: 'ツイート: ',
+          validate: (value) => (!value ? '何か入力してください' : true)
+        }
+      ],
+      { onCancel }
+    )
+    return { input }
+  } catch (err) {
+    return { input: '' }
+  }
+}
+
+const postTweet = async (
+  accessToken: string,
+  accessTokenSecret: string,
+  tweet: string
+) => {
+  try {
+    const res = await axios.post(`${middlewareUrl}/postTweet`, {
+      access_token: accessToken,
+      access_token_secret: accessTokenSecret,
+      tweet
+    })
+    console.log(res)
+    return true
+  } catch (err) {
+    return false
+  }
+}
+
+const checkUser = (db: Nedb, tweet: string): any => {
+  return db.find(
+    { selected: true },
+    async (err, result: Token[]): Promise<boolean> => {
+      if (!err) {
+        const { accessToken, accessTokenSecret } = result[0]
+        if (await postTweet(accessToken, accessTokenSecret, tweet)) {
+          console.log('Success: 送信完了')
+          return true
+        }
+        console.log('Error: トホホ...送信に失敗しちゃったようですね')
+        return false
       }
+      console.log('Error: アカウントが見つからないようです...')
+      return false
     }
   )
+}
+
+const Tweet = async (db: Nedb, tweet?: string): Promise<boolean> => {
+  if (tweet) {
+    if (await checkUser(db, tweet)) {
+      return true
+    }
+    return false
+  }
+  const { input } = await inputTweet()
+  if (input) {
+    if (await checkUser(db, input)) {
+      return true
+    }
+    return false
+  }
+  console.log('Error: 不明なエラー')
+  return false
 }
 
 export default Tweet
