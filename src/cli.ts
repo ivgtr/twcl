@@ -1,17 +1,25 @@
 import program from 'commander'
-import Datastore from 'nedb'
+import Nedb from 'nedb'
 
 import tweet from './commands/tweet'
 import { Login } from './commands/oauth'
 
-const main = (): void => {
-  const db = new Datastore({
-    filename: 'configs/setting.db'
+const userCheck = (db): boolean => {
+  return db.find({ type: 'user' }, (err, docs: any[]): boolean => {
+    if (docs.length > 0) {
+      return false
+    }
+    return true
   })
-  db.loadDatabase()
+}
 
-  if (!db) {
-    Login()
+const main = async (): Promise<void> => {
+  const db = await new Nedb({
+    filename: `${__dirname}/configs/database`,
+    autoload: true
+  })
+  if (userCheck(db)) {
+    await Login(db)
     return
   }
 
@@ -20,10 +28,21 @@ const main = (): void => {
     .option('-lo, --logout', 'ログアウトする')
     .option('-t, --tweet [tweet]', 'ツイートする')
     .option('-tl, --timeline', 'タイムラインを取得します')
+    .option('-c, --console', 'testだよ')
     .parse(process.argv)
 
-  if (program.tweet) tweet()
-  if (program.login) Login()
+  if (program.login) Login(db)
+  if (program.tweet) {
+    if (typeof program.tweet === 'string') {
+      tweet(db, program.tweet)
+      return
+    }
+    tweet(db, '')
+    return
+  }
+  if (program.console) {
+    console.log('test')
+  }
   // For default, show help
   const NO_COMMAND_SPECIFIED = process.argv.length <= 2
   if (NO_COMMAND_SPECIFIED) {
