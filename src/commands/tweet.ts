@@ -49,7 +49,7 @@ const postTweet = async (
       access_token_secret: accessTokenSecret,
       tweet
     })
-    console.log(res)
+    console.log(res.data)
     return true
   } catch (err) {
     return false
