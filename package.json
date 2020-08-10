@@ -4,12 +4,14 @@
   "description": "nodeで作られたcli上のtwitterクライアント",
   "main": "./lib/index.js",
   "preferGlobal": true,
-  "bin":{
+  "bin": {
     "twcl": "./lib/index.js"
   },
   "scripts": {
     "start": "tsc -w",
-    "build": "tsc"
+    "prebuild": "rimraf lib",
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
   },
   "keywords": [],
   "author": "ivgtr <gear.1112t.o@gmail.com> (https://github.com/ivgtr)",
@@ -33,6 +35,7 @@
     "eslint": "^7.5.0",
     "eslint-config-metamo": "^0.2.6",
     "prettier": "^2.0.5",
+    "rimraf": "^3.0.2",
     "typescript": "^3.9.7"
   }
 }
