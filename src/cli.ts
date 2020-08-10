@@ -41,7 +41,11 @@ const main = async (): Promise<void> => {
     return
   }
   if (program.console) {
-    console.log('test')
+    db.find({ selected: true }, async (err, result) => {
+      if (!err) {
+        console.log(result.slice(-1)[0])
+      }
+    })
   }
   // For default, show help
   const NO_COMMAND_SPECIFIED = process.argv.length <= 2
