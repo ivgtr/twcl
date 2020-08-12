@@ -14,13 +14,9 @@ const getOauthToken = async (): Promise<{
     const { oauthToken, oauthTokenSecret } = request.data
     return { oauthToken, oauthTokenSecret }
   } catch (err) {
-    console.error(
+    throw new Error(
       'Twitter APIに問題があるようです・・・時間を空けてからもう一度試してみてください。'
     )
-    return {
-      oauthToken: '',
-      oauthTokenSecret: ''
-    }
   }
 }
 
@@ -41,11 +37,9 @@ const getAccessToken = async (
     const { accessToken, accessTokenSecret } = request.data
     return { accessToken, accessTokenSecret }
   } catch (err) {
-    console.error(err)
-    return {
-      accessToken: '',
-      accessTokenSecret: ''
-    }
+    throw new Error(
+      '入力されたトークンに問題があるようです・・・もう一度最初から試してみてください。'
+    )
   }
 }
 
@@ -81,7 +75,9 @@ const userInput = async (): Promise<{
     )
     return { oauthVerifier, userName }
   } catch (err) {
-    return { oauthVerifier: '', userName: '' }
+    throw new Error(
+      '入力内容が確認できませんでした...もう一度最初から入力してください。'
+    )
   }
 }
 
@@ -99,7 +95,7 @@ const setDb = async (
     selected: true
   }
 
-  db.insert(data, (err, docs) => {
+  db.insert(data, () => {
     console.log(`ようこそ、${userName}!`)
   })
 }
@@ -109,11 +105,15 @@ export const Login = async (db: Nedb): Promise<boolean> => {
   if (oauthToken && oauthTokenSecret) {
     await open(`${callbackUrl}/authenticate?oauth_token=${oauthToken}`)
   } else {
-    return false
+    throw new Error(
+      'Twitter APIに問題があるようです・・・時間を空けてからもう一度試してみてください。'
+    )
   }
   const { oauthVerifier, userName } = await userInput()
   if (!oauthVerifier || !userName) {
-    return false
+    throw new Error(
+      '入力内容が確認できませんでした...もう一度最初から入力してください。'
+    )
   }
   const { accessToken, accessTokenSecret } = await getAccessToken(
     oauthToken,
@@ -123,7 +123,9 @@ export const Login = async (db: Nedb): Promise<boolean> => {
   if (accessToken && accessTokenSecret) {
     await setDb(db, accessToken, accessTokenSecret, userName)
   } else {
-    return false
+    throw new Error(
+      '入力されたトークンに問題があるようです・・・もう一度最初から試してみてください。'
+    )
   }
   return true
 }

@@ -34,7 +34,9 @@ const inputTweet = async (): Promise<{
     )
     return { input }
   } catch (err) {
-    return { input: '' }
+    throw new Error(
+      '入力内容が確認できませんでした...もう一度最初から入力してください。'
+    )
   }
 }
 
@@ -52,7 +54,9 @@ const postTweet = async (
     console.log(res.data)
     return true
   } catch (err) {
-    return false
+    throw new Error(
+      'Twitter APIに問題があるようです・・・時間を空けてからもう一度試してみてください。'
+    )
   }
 }
 
@@ -64,14 +68,16 @@ const checkUser = (db: Nedb, tweet: string): any => {
       if (!err) {
         const { accessToken, accessTokenSecret } = result.slice(-1)[0] // 変更
         if (await postTweet(accessToken, accessTokenSecret, tweet)) {
-          console.log('Success: 送信完了')
+          console.log(`Success: 送信完了\nツイート: ${tweet}`)
           return true
         }
-        console.log('Error: トホホ...送信に失敗しちゃったようですね')
-        return false
+        throw new Error(
+          'トホホ...送信に失敗しちゃったようです...もう一度ログインを試してみてください'
+        )
       }
-      console.log('Error: アカウントが見つからないようです...')
-      return false
+      throw new Error(
+        'アカウントが見つからないようです...もう一度ログインを試してみてください'
+      )
     }
   )
 }
@@ -81,17 +87,20 @@ const Tweet = async (db: Nedb, tweet?: string): Promise<boolean> => {
     if (await checkUser(db, tweet)) {
       return true
     }
-    return false
+    throw new Error(
+      'アカウントが見つからないようです...ログインを試してみてください'
+    )
   }
   const { input } = await inputTweet()
   if (input) {
     if (await checkUser(db, input)) {
       return true
     }
-    return false
+    throw new Error(
+      'アカウントが見つからないようです...ログインを試してみてください'
+    )
   }
-  console.log('Error: 不明なエラー')
-  return false
+  throw new Error('不明なエラー')
 }
 
 export default Tweet
