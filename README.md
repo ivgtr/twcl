@@ -46,5 +46,9 @@ $ 削除したいアカウントを選択してください > // all or selected
 - アカウント切替
 - and more...
 
+## バグ
+バグを発見したら報告してください、対応します
+- [https://github.com/ivgtr/twcl/issues](https://github.com/ivgtr/twcl/issues)
+
 ## License
 MIT ©[ivgtr](https://github.com/ivgtr)
