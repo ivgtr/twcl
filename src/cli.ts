@@ -2,23 +2,27 @@ import program from 'commander'
 import Nedb from 'nedb'
 
 import tweet from './commands/tweet'
-import { Login } from './commands/oauth'
+import { Login, Logout } from './commands/oauth'
 
-const userCheck = (db): boolean => {
-  return db.find({ type: 'user' }, (err, docs: any[]): boolean => {
-    if (docs.length > 0) {
-      return false
-    }
-    return true
-  })
-}
+const path = `${__dirname}/configs/database`
 
 const main = async (): Promise<void> => {
   const db = await new Nedb({
-    filename: `${__dirname}/configs/database`,
+    filename: path,
     autoload: true
   })
-  if (userCheck(db)) {
+
+  const userCheck = await new Promise((resolve) => {
+    db.findOne({ selected: true }, (err, doc) => {
+      if (!doc) {
+        resolve(false)
+      } else {
+        resolve(true)
+      }
+    })
+  })
+
+  if (!userCheck) {
     await Login(db)
     return
   }
@@ -32,9 +36,7 @@ const main = async (): Promise<void> => {
     .parse(process.argv)
 
   if (program.login) Login(db)
-  if (program.logout) {
-    console.log('未実装')
-  }
+  if (program.logout) Logout(db, path)
   if (program.tweet) {
     if (typeof program.tweet === 'string') {
       tweet(db, program.tweet)
@@ -48,10 +50,11 @@ const main = async (): Promise<void> => {
   }
   if (program.console) {
     console.log('機能のテスト')
-    console.log('現在のユーザーは')
     db.find({ selected: true }, async (err, result) => {
-      if (!err) {
-        console.log(result.slice(-1)[0])
+      if (result.length) {
+        console.log(`現在のユーザーは: ${result.slice(-1)[0].name}`)
+      } else {
+        console.log('ログインしていません')
       }
     })
   }

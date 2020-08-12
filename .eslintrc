@@ -1,3 +1,6 @@
 {
-  "extends": ["eslint-config-metamo","eslint-config-metamo/ts"]
+  "extends": ["eslint-config-metamo","eslint-config-metamo/ts"],
+  "rules": {
+    "no-underscore-dangle":0
+  }
 }
