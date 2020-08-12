@@ -3,8 +3,7 @@ import Nedb from 'nedb'
 import open from 'open'
 import prompts from 'prompts'
 
-const middlewareUrl = 'https://twcl-middleware.herokuapp.com'
-const oauthUrl = 'https://api.twitter.com/oauth'
+import { middlewareUrl, callbackUrl } from '../configs/configs.json'
 
 const getOauthToken = async (): Promise<{
   oauthToken: string
@@ -108,7 +107,7 @@ const setDb = async (
 export const Login = async (db: Nedb): Promise<boolean> => {
   const { oauthToken, oauthTokenSecret } = await getOauthToken()
   if (oauthToken && oauthTokenSecret) {
-    await open(`${oauthUrl}/authenticate?oauth_token=${oauthToken}`)
+    await open(`${callbackUrl}/authenticate?oauth_token=${oauthToken}`)
   } else {
     return false
   }

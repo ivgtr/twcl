@@ -2,6 +2,8 @@ import axios from 'axios'
 import Nedb from 'nedb'
 import prompts from 'prompts'
 
+import { middlewareUrl } from '../configs/configs.json'
+
 type Token = {
   type?: string
   name?: string
@@ -9,8 +11,6 @@ type Token = {
   accessTokenSecret: string
   selected?: boolean
 }
-
-const middlewareUrl = 'https://twcl-middleware.herokuapp.com'
 
 const inputTweet = async (): Promise<{
   input: string
