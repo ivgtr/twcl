@@ -21,8 +21,8 @@ $ twcl -l // or twcl --login
 ```
 ブラウザが開くので連携を許可してください。
 ```
-$ 表示されたTokenを入力 > [Token] 
-$ 表示名を入力 > [Name]
+$ ブラウザに表示されたトークンを入力してください > [Token] 
+$ 表示名を入力してください > [Name]
 ```
 ##### Tweet
 ``` javascript
@@ -31,7 +31,7 @@ $ twcl -t [message] // or twcl --tweet [message]
 or  
 ``` javascript
 $ twcl -t // or twcl --tweet
-$ Tweet > [message]
+$ ツイート: > [message]
 ```
 
 ## 今後の予定
