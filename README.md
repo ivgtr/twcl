@@ -33,12 +33,17 @@ or
 $ twcl -t // or twcl --tweet
 $ ツイート: > [message]
 ```
+##### Logout
+``` javascript
+$ twcl -lo // or twcl --logout
+$ 削除したいアカウントを洗濯してください > // all or selected
+```
 
 ## 今後の予定
 - TL取得機能の追加
 - List取得機能の追加
 - 複数アカウント対応(現在は最後にログインしたアカウントを利用可能)
-- Logoutの追加(LocalDBから対象のデータを削除)
+- アカウント切替
 - and more...
 
 ## License
