@@ -46,12 +46,11 @@ const postTweet = async (
   tweet: string
 ) => {
   try {
-    const res = await axios.post(`${middlewareUrl}/postTweet`, {
+    await axios.post(`${middlewareUrl}/postTweet`, {
       access_token: accessToken,
       access_token_secret: accessTokenSecret,
       tweet
     })
-    console.log(res.data)
     return true
   } catch (err) {
     throw new Error(
@@ -60,47 +59,54 @@ const postTweet = async (
   }
 }
 
-const checkUser = (db: Nedb, tweet: string): any => {
-  return db.find(
-    {}, // 最新の登録ユーザーを使うように一旦設定
-    // { selected: true },
-    async (err, result: Token[]): Promise<boolean> => {
-      if (!err) {
-        const { accessToken, accessTokenSecret } = result.slice(-1)[0] // 変更
-        if (await postTweet(accessToken, accessTokenSecret, tweet)) {
-          console.log(`Success: 送信完了\nツイート: ${tweet}`)
-          return true
+const checkUser = async (
+  db: Nedb
+): Promise<{
+  accessToken?: string
+  accessTokenSecret?: string
+}> => {
+  const Token = await new Promise((resolve) => {
+    db.find(
+      { selected: true },
+      async (err, result: Token[]): Promise<boolean> => {
+        if (!err) {
+          const { accessToken, accessTokenSecret } = result.slice(-1)[0] // 変更
+          if (accessToken && accessTokenSecret) {
+            resolve({ accessToken, accessTokenSecret })
+          }
+          return
         }
         throw new Error(
-          'トホホ...送信に失敗しちゃったようです...もう一度ログインを試してみてください'
+          'アカウントが見つからないようです...もう一度ログインを試してみてください'
         )
       }
-      throw new Error(
-        'アカウントが見つからないようです...もう一度ログインを試してみてください'
-      )
-    }
-  )
+    )
+  })
+  return Token
 }
 
-const Tweet = async (db: Nedb, tweet?: string): Promise<boolean> => {
-  if (tweet) {
-    if (await checkUser(db, tweet)) {
-      return true
+const Tweet = async (db: Nedb, tweet?: string): Promise<void> => {
+  try {
+    if (tweet) {
+      const { accessToken, accessTokenSecret } = await checkUser(db)
+      if (await postTweet(accessToken, accessTokenSecret, tweet)) {
+        console.log(`Success: 送信完了\nツイート: ${tweet}`)
+        return
+      }
+      throw new Error('ツイートの送信にエラーがあったようです...')
     }
-    throw new Error(
-      'アカウントが見つからないようです...ログインを試してみてください'
-    )
-  }
-  const { input } = await inputTweet()
-  if (input) {
-    if (await checkUser(db, input)) {
-      return true
+    const { input } = await inputTweet()
+    if (input) {
+      const { accessToken, accessTokenSecret } = await checkUser(db)
+      if (await postTweet(accessToken, accessTokenSecret, input)) {
+        console.log(`Success: 送信完了\nツイート: ${input}`)
+        return
+      }
+      throw new Error('ツイートの送信にエラーがあったようです...')
     }
-    throw new Error(
-      'アカウントが見つからないようです...ログインを試してみてください'
-    )
+  } catch (err) {
+    console.error(err.message)
   }
-  throw new Error('不明なエラー')
 }
 
 export default Tweet
