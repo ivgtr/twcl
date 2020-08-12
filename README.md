@@ -34,6 +34,16 @@ or
 $ twcl -t // or twcl --tweet
 $ ツイート: > [message]
 ```
+##### Timeline
+``` javascript
+$ twcl -tl // or twcl --timeline
+$ 自分のタイムラインが表示されます(とりあえず最新の10件を取得に固定)
+```
+or
+``` javascript
+$ twcl -tl [user] // or twcl --timeline [user]
+$ 指定したユーザー(id)のタイムラインが表示されます(とりあえず最新の10件を取得に固定)
+```
 ##### Logout
 ``` javascript
 $ twcl -lo // or twcl --logout
