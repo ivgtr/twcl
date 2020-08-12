@@ -32,6 +32,9 @@ const main = async (): Promise<void> => {
     .parse(process.argv)
 
   if (program.login) Login(db)
+  if (program.logout) {
+    console.log('未実装')
+  }
   if (program.tweet) {
     if (typeof program.tweet === 'string') {
       tweet(db, program.tweet)
@@ -40,7 +43,12 @@ const main = async (): Promise<void> => {
     tweet(db, '')
     return
   }
+  if (program.timeline) {
+    console.log('未実装')
+  }
   if (program.console) {
+    console.log('機能のテスト')
+    console.log('現在のユーザーは')
     db.find({ selected: true }, async (err, result) => {
       if (!err) {
         console.log(result.slice(-1)[0])
