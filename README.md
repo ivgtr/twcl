@@ -10,6 +10,7 @@ cli上でTwitterする為のツールです
 ```
 $ npm i -g twcl
 ```
+or
 ```
 $ yarn add -g twcl
 ```
