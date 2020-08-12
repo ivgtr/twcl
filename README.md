@@ -36,7 +36,7 @@ $ ツイート: > [message]
 ##### Logout
 ``` javascript
 $ twcl -lo // or twcl --logout
-$ 削除したいアカウントを洗濯してください > // all or selected
+$ 削除したいアカウントを選択してください > // all or selected
 ```
 
 ## 今後の予定

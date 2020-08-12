@@ -202,7 +202,7 @@ const selectedDeleteUser = async (
         {
           type: 'select',
           name: 'user',
-          message: '削除したいアカウントを洗濯してください',
+          message: '削除したいアカウントを選択してください',
           choices: selected
         }
       ],
