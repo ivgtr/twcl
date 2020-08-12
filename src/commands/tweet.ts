@@ -10,7 +10,7 @@ type Token = {
   selected?: boolean
 }
 
-const middlewareUrl = 'http://localhost:5000'
+const middlewareUrl = 'https://twcl-middleware.herokuapp.com'
 
 const inputTweet = async (): Promise<{
   input: string
