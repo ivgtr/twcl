@@ -28,11 +28,12 @@ const main = async (): Promise<void> => {
   }
 
   program
-    .option('-l, --login', 'ログインする')
-    .option('-lo, --logout', 'ログアウトする')
-    .option('-t, --tweet [tweet]', 'ツイートする')
-    .option('-tl, --timeline', 'タイムラインを取得します')
-    .option('-c, --console', 'testだよ')
+    .version('0.0.1', '-v, --version', 'バージョンを確認')
+    .option('-l, --login', 'ログイン')
+    .option('-lo, --logout', 'ログアウト')
+    .option('-t, --tweet [tweet]', 'ツイート')
+    .option('-tl, --timeline', 'タイムラインを取得')
+    .option('-c, --console', 'testコマンド')
     .parse(process.argv)
 
   if (program.login) Login(db)
@@ -52,7 +53,7 @@ const main = async (): Promise<void> => {
     console.log('機能のテスト')
     db.find({ selected: true }, async (err, result) => {
       if (result.length) {
-        console.log(`現在のユーザーは: ${result.slice(-1)[0].name}`)
+        console.log(`${result.slice(-1)[0].name}`)
       } else {
         console.log('ログインしていません')
       }
@@ -61,8 +62,13 @@ const main = async (): Promise<void> => {
   // For default, show help
   const NO_COMMAND_SPECIFIED = process.argv.length <= 2
   if (NO_COMMAND_SPECIFIED) {
-    // e.g. display usage
-    program.help()
+    db.find({ selected: true }, async (err, result) => {
+      if (result.length) {
+        console.log(`${result.slice(-1)[0].name} でログインしています`)
+      } else {
+        console.log('ログインしていません')
+      }
+    })
   }
 }
 
