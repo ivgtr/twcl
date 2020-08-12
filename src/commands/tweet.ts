@@ -58,7 +58,8 @@ const postTweet = async (
 
 const checkUser = (db: Nedb, tweet: string): any => {
   return db.find(
-    { selected: true },
+    {}, // 最新の登録ユーザーを使うように一旦設定
+    // { selected: true },
     async (err, result: Token[]): Promise<boolean> => {
       if (!err) {
         const { accessToken, accessTokenSecret } = result.slice(-1)[0] // 変更
