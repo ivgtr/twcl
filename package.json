@@ -13,8 +13,12 @@
     "build": "tsc",
     "prepublishOnly": "npm run build"
   },
-  "keywords": [],
+  "keywords": ["Twitter","cli"],
   "author": "ivgtr <gear.1112t.o@gmail.com> (https://github.com/ivgtr)",
+  "repository": {
+   "type": "git",
+    "url": "git://github.com:ivgtr/twcl.git"
+  },
   "license": "MIT",
   "dependencies": {
     "axios": "^0.19.2",
