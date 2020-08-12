@@ -2,6 +2,7 @@ import program from 'commander'
 import Nedb from 'nedb'
 
 import tweet from './commands/tweet'
+import { timeline } from './commands/timeline'
 import { Login, Logout } from './commands/oauth'
 
 const path = `${__dirname}/configs/database`
@@ -32,7 +33,7 @@ const main = async (): Promise<void> => {
     .option('-l, --login', 'ログイン')
     .option('-lo, --logout', 'ログアウト')
     .option('-t, --tweet [tweet]', 'ツイート')
-    .option('-tl, --timeline', 'タイムラインを取得')
+    .option('-tl, --timeline [user]', 'タイムラインを取得')
     .option('-c, --console', 'testコマンド')
     .parse(process.argv)
 
@@ -47,7 +48,12 @@ const main = async (): Promise<void> => {
     return
   }
   if (program.timeline) {
-    console.log('未実装')
+    if (typeof program.timeline === 'string') {
+      timeline(db, program.timeline)
+      return
+    }
+    timeline(db, '')
+    return
   }
   if (program.console) {
     console.log('機能のテスト')
