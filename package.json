@@ -1,6 +1,6 @@
 {
   "name": "twcl",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "nodeで作られたcli上のtwitterクライアント",
   "main": "./lib/index.js",
   "preferGlobal": true,
@@ -13,10 +13,13 @@
     "build": "tsc",
     "prepublishOnly": "npm run build"
   },
-  "keywords": ["Twitter","cli"],
+  "keywords": [
+    "Twitter",
+    "cli"
+  ],
   "author": "ivgtr <gear.1112t.o@gmail.com> (https://github.com/ivgtr)",
   "repository": {
-   "type": "git",
+    "type": "git",
     "url": "git://github.com:ivgtr/twcl.git"
   },
   "license": "MIT",
