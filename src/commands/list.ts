@@ -111,11 +111,9 @@ const getList = async (
   accessToken,
   accessTokenSecret,
   options: {
-    listid?: any
-    userName?: string
-    listName?: string
+    listid?: string
   }
-): Promise<any> => {
+): Promise<boolean> => {
   try {
     const { data } = await axios.post(`${middlewareUrl}/getList`, {
       access_token: accessToken,
@@ -132,17 +130,15 @@ const getList = async (
 const list = async (
   db: Nedb,
   data: {
-    userName?: string
-    listName?: string
+    listid?: string
   }
 ): Promise<void> => {
   try {
     const { accessToken, accessTokenSecret, userid } = await checkUser(db)
     if (Object.keys(data).length) {
-      const { userName, listName } = data
+      const { listid } = data
       await getList(accessToken, accessTokenSecret, {
-        userName,
-        listName
+        listid
       })
       return
     }

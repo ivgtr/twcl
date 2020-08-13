@@ -65,23 +65,9 @@ const main = async (): Promise<void> => {
   }
   if (program.list) {
     if (typeof program.list === 'string') {
-      const data = program.list.split('/')
-      if (data.length > 1) {
-        if (data[0].charAt(0) === '@') {
-          const userId = data[0].slice(1)
-          list(db, {
-            userName: userId,
-            listName: data[1]
-          })
-          return
-        }
-        list(db, {
-          userName: data[0],
-          listName: data[1]
-        })
-        return
-      }
-      console.error('Error: 入力形式が不正です')
+      list(db, {
+        listid: program.list
+      })
       return
     }
     list(db, {})
@@ -91,7 +77,7 @@ const main = async (): Promise<void> => {
     console.log('機能のテスト')
     db.find({ selected: true }, async (err, result) => {
       if (result.length) {
-        console.log(`${result.slice(-1)[0].name}`)
+        console.log(`ログイン中のアカウント: ${result.slice(-1)[0].name}`)
       } else {
         console.log('ログインしていません')
       }
