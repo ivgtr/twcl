@@ -37,7 +37,7 @@ const main = async (): Promise<void> => {
     .option('-t, --tweet [tweet]', 'ツイート')
     .option('-tl, --timeline [user]', 'タイムラインを取得')
     .option('-li, --list [user/list]', 'リストを取得')
-    .option('-c, --console', 'testコマンド')
+    .option('-c, --change', 'アカウント切替')
     .parse(process.argv)
 
   if (program.login) Login(db)
@@ -73,8 +73,9 @@ const main = async (): Promise<void> => {
     list(db, {})
     return
   }
-  if (program.console) {
-    console.log('機能のテスト')
+  if (program.change) {
+    console.log('アカウント切替機能')
+    console.log('実装中')
     db.find({ selected: true }, async (err, result) => {
       if (result.length) {
         console.log(`ログイン中のアカウント: ${result.slice(-1)[0].name}`)
