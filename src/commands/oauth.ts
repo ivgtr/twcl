@@ -24,8 +24,9 @@ const getAccessToken = async (
   oauthTokenSecret: string,
   oauthVerifier: string
 ): Promise<{
-  accessToken?: string
-  accessTokenSecret?: string
+  accessToken: string
+  accessTokenSecret: string
+  id: number
 }> => {
   try {
     const request = await axios.post(`${middlewareUrl}/getAccessToken`, {
@@ -33,8 +34,8 @@ const getAccessToken = async (
       oauth_token_secret: oauthTokenSecret,
       oauth_verifier: oauthVerifier
     })
-    const { accessToken, accessTokenSecret } = request.data
-    return { accessToken, accessTokenSecret }
+    const { accessToken, accessTokenSecret, id } = request.data
+    return { accessToken, accessTokenSecret, id }
   } catch (err) {
     throw new Error(err.message)
   }
@@ -80,7 +81,8 @@ const setDb = async (
   db: Nedb,
   accessToken: string,
   accessTokenSecret: string,
-  userName: string
+  userName: string,
+  id: number
 ) => {
   try {
     await db.update(
@@ -102,6 +104,7 @@ const setDb = async (
             name: userName,
             accessToken,
             accessTokenSecret,
+            userid: id.toString(),
             selected: true
           }
 
@@ -132,13 +135,13 @@ export const Login = async (db: Nedb): Promise<void> => {
     if (!oauthVerifier || !userName) {
       return
     }
-    const { accessToken, accessTokenSecret } = await getAccessToken(
+    const { accessToken, accessTokenSecret, id } = await getAccessToken(
       oauthToken,
       oauthTokenSecret,
       oauthVerifier
     )
-    if (accessToken && accessTokenSecret) {
-      await setDb(db, accessToken, accessTokenSecret, userName)
+    if (accessToken && accessTokenSecret && id) {
+      await setDb(db, accessToken, accessTokenSecret, userName, id)
     } else {
       return
     }
