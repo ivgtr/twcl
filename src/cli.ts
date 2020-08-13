@@ -67,6 +67,14 @@ const main = async (): Promise<void> => {
     if (typeof program.list === 'string') {
       const data = program.list.split('/')
       if (data.length > 1) {
+        if (data[0].charAt(0) === '@') {
+          const userId = data[0].slice(1)
+          list(db, {
+            userName: userId,
+            listName: data[1]
+          })
+          return
+        }
         list(db, {
           userName: data[0],
           listName: data[1]
