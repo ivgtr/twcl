@@ -101,7 +101,6 @@ const selectedList = async (lists: list[]) => {
       ],
       { onCancel }
     )
-    console.log(selectedListId)
     return selectedListId
   } catch (err) {
     throw new Error('Error: 選択されませんでした')
