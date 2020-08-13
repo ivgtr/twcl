@@ -42,7 +42,7 @@ $ // 自分のタイムラインが表示されます(とりあえず最新の10
 or
 ``` javascript
 $ twcl -tl [user] // or twcl --timeline [user]
-$ // 指定したユーザー(id)の最新ツイートが表示されます(idは@から始まるid)
+$ // 指定したユーザー(id)の最新ツイートが表示されます([id]は@から始まるid)
 ```
 ##### List
 ``` javascript
@@ -52,10 +52,11 @@ $ // 選択したリストが表示されます(とりあえず最新の10件を
 ```
 or
 ``` javascript
-$ twcl -li [user/list] // or twcl --list [user/list]
-$ // 入力したリストが表示されます(listを所有しているユーザー(id)を入力する必要があります)
+$ twcl -li [list] // or twcl --list [user/list]
+$ // 入力したリストが表示されます([list]はlistを開いた時のurlのlists/xxxのxxx部分)
 ```
 リストから選択する方はとても楽ですがAPI制限がキツイので直接入力する方が良いかもしれません...  
+リストの一覧を取得するのは最初だけでdatabaseに保存するのも考えています
 ##### Logout
 ``` javascript
 $ twcl -lo // or twcl --logout
@@ -63,8 +64,7 @@ $ 削除したいアカウントを選択してください > // all or selected
 ```
 
 ## 今後の予定
-- 複数アカウント対応(現在は最後にログインしたアカウントを利用可能)
-- アカウント切替
+- アカウント切替(現在は最後にログインしたアカウントを利用可能)
 - and more...
 
 ## バグ
