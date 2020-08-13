@@ -1,5 +1,6 @@
 import axios from 'axios'
 import Nedb from 'nedb'
+import colors from './console'
 
 import { middlewareUrl } from '../configs/configs.json'
 // const middlewareUrl = 'http://localhost:5000'
@@ -20,7 +21,7 @@ const viewTimeline = (
   }[]
 ) => {
   data.forEach((item) => {
-    console.log(`${item.id} ${item.name}\n${item.text}\n`)
+    console.log(`${item.name} ${colors.blue(item.id)}\n${item.text}\n`)
   })
 }
 
