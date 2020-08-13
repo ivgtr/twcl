@@ -42,7 +42,7 @@ $ 自分のタイムラインが表示されます(とりあえず最新の10件
 or
 ``` javascript
 $ twcl -tl [user] // or twcl --timeline [user]
-$ 指定したユーザー(id)のタイムラインが表示されます(idは@から始まるuserid)
+$ 指定したユーザー(id)の最新ツイートが表示されます(idは@から始まるuserid)
 ```
 ##### Logout
 ``` javascript
