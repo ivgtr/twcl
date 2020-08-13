@@ -1,5 +1,6 @@
 import program from 'commander'
 import Nedb from 'nedb'
+import pjson from 'pjson'
 
 import tweet from './commands/tweet'
 import { timeline } from './commands/timeline'
@@ -29,7 +30,7 @@ const main = async (): Promise<void> => {
   }
 
   program
-    .version('0.0.1', '-v, --version', 'バージョンを確認')
+    .version(pjson.version, '-v, --version', 'バージョンを確認')
     .option('-l, --login', 'ログイン')
     .option('-lo, --logout', 'ログアウト')
     .option('-t, --tweet [tweet]', 'ツイート')
