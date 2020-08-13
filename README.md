@@ -63,6 +63,16 @@ $ twcl -lo // or twcl --logout
 $ 削除したいアカウントを選択してください > // all or selected
 ```
 
+## もっと楽にtwclにアクセスしたいですか？
+aliasを登録することをお勧めします。`.bashrc`や`.zshrc`を開いて以下の一文を入れましょう
+``` javascript
+alias t='twcl'
+```  
+next step
+``` javascript
+t -t [tweet] // 世界が早くなりました
+```  
+
 ## 今後の予定
 - アカウント切替(現在は最後にログインしたアカウントを利用可能)
 - and more...
