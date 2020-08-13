@@ -77,15 +77,9 @@ const userInput = async (): Promise<{
   }
 }
 
-const setDb = async (
-  db: Nedb,
-  accessToken: string,
-  accessTokenSecret: string,
-  userName: string,
-  id: number
-) => {
-  try {
-    await db.update(
+const unSelectDb = async (db: Nedb) => {
+  const data: boolean = await new Promise((resolve) => {
+    db.update(
       {
         selected: true
       },
@@ -99,25 +93,47 @@ const setDb = async (
       },
       (error) => {
         if (!error) {
-          const data = {
-            type: 'user',
-            name: userName,
-            accessToken,
-            accessTokenSecret,
-            userid: id.toString(),
-            selected: true
-          }
-
-          db.insert(data, () => {
-            console.log(`ようこそ、${userName}!`)
-          })
-        } else {
-          throw new Error(
-            'database登録時にエラーがあったようです...もう一度ログインを試してみてください'
-          )
+          resolve(true)
+          return
         }
+        throw new Error(
+          'database登録時にエラーがあったようです...もう一度ログインを試してみてください'
+        )
       }
     )
+  })
+  await db.loadDatabase()
+  return data
+}
+
+const setDb = async (
+  db: Nedb,
+  accessToken: string,
+  accessTokenSecret: string,
+  userName: string,
+  id: number
+) => {
+  try {
+    const preSet = await unSelectDb(db)
+    if (preSet) {
+      const data = {
+        type: 'user',
+        name: userName,
+        accessToken,
+        accessTokenSecret,
+        userid: id.toString(),
+        selected: true
+      }
+      db.insert(data, (err) => {
+        if (!err) {
+          console.log(`ようこそ、${userName}!`)
+          return
+        }
+        throw new Error(
+          'database登録時にエラーがあったようです...もう一度ログインを試してみてください'
+        )
+      })
+    }
   } catch (err) {
     throw new Error(err.message)
   }
@@ -150,52 +166,165 @@ export const Login = async (db: Nedb): Promise<void> => {
   }
 }
 
-const logoutUser = async (
-  db: Nedb,
-  user: string,
-  path: string
-): Promise<boolean> => {
+const deleteUser = async (db: Nedb, id: string, name: string) => {
+  const flag: boolean = await new Promise((resolve) => {
+    db.remove({ _id: id }, { multi: false }, (err) => {
+      if (!err) {
+        console.log(`Success: ${name}からログアウトしました`)
+        resolve(true)
+        return
+      }
+      throw new Error(
+        'database操作時にエラーがあったようです...もう一度ログインを試してみてください'
+      )
+    })
+  })
+  return flag
+}
+
+const findUsers = async (
+  db: Nedb
+): Promise<
+  { title: string; value: { type: string; id?: string; name?: string } }[]
+> => {
   try {
-    await new Promise(() => {
-      db.find({ _id: user }, (err, result) => {
-        console.log(result)
-        db.remove({ _id: user }, { multi: false }, (e) => {
-          if (!e) {
-            console.log(
-              `Success: ${result.slice(-1)[0].name}からログアウトしました`
-            )
-          }
-        })
-        if (result.slice(-1)[0].selected) {
-          db.find({ selected: false }, (errr, selected) => {
-            db.update(
-              { _id: selected.slice(-1)[0]._id },
-              {
-                $set: {
-                  selected: true
-                }
-              },
-              {},
-              () => {
-                const reload = new Nedb({
-                  filename: path
-                })
-                reload.loadDatabase()
+    const selectedUser: {
+      title: string
+      value: { type: string; id?: string; name?: string }
+    }[] = await new Promise((resolve) => {
+      db.find({}, (err, result) => {
+        if (!err) {
+          const selectArray: {
+            title: string
+            value: { type: string; id?: string; name?: string }
+          }[] = [
+            {
+              title: 'all',
+              value: { type: 'all' }
+            }
+          ]
+          for (let i = 0; i < result.length; i += 1) {
+            selectArray.push({
+              title: result[i].name,
+              value: {
+                type: 'user',
+                id: result[i]._id,
+                name: result[i].name
               }
-            )
-          })
+            })
+          }
+          resolve(selectArray)
+          return
         }
+        throw new Error(
+          'database検索時にエラーがあったようです...もう一度試してみてください'
+        )
       })
     })
+    return selectedUser
+  } catch (err) {
+    throw new Error(
+      'Error: パッケージに何か問題があるようです...databaseを削除すると直るかもしれません'
+    )
+  }
+}
+
+const checkSelectUser = async (db: Nedb): Promise<boolean> => {
+  try {
+    const check: boolean = await new Promise((resolve) => {
+      db.find({ selected: true }, (err, result) => {
+        if (!err) {
+          if (result.length) {
+            resolve(true)
+            return
+          }
+          resolve(false)
+          return
+        }
+        throw new Error(
+          'database検索時にエラーがあったようです...もう一度試してみてください'
+        )
+      })
+    })
+    return check
+  } catch (err) {
+    throw new Error(
+      'database検索時にエラーがあったようです...もう一度試してみてください'
+    )
+  }
+}
+
+const selectUser = async (db: Nedb) => {
+  const user: string = await new Promise((resolve) => {
+    db.findOne({}, (err, selected) => {
+      if (!err) {
+        if (selected) {
+          const { _id } = selected
+          resolve(_id)
+          return
+        }
+        resolve('')
+        return
+      }
+      throw new Error(
+        'database検索時にエラーがあったようです...もう一度試してみてください'
+      )
+    })
+  })
+  return user
+}
+
+const updateUser = async (db: Nedb, user: string) => {
+  const completed = await new Promise((resolve) => {
+    db.update(
+      { _id: user },
+      {
+        $set: {
+          selected: true
+        }
+      },
+      {},
+      (err) => {
+        if (!err) {
+          resolve(true)
+          return
+        }
+        throw new Error(
+          'database検索時にエラーがあったようです...もう一度試してみてください'
+        )
+      }
+    )
+  })
+  return completed
+}
+
+const logoutUser = async (
+  db: Nedb,
+  id: string,
+  name: string
+): Promise<boolean> => {
+  try {
+    await deleteUser(db, id, name)
+    const check = await checkSelectUser(db)
+    if (!check) {
+      const user = await selectUser(db)
+      if (user) {
+        await updateUser(db, user)
+      }
+    }
+    await db.loadDatabase()
     return true
   } catch (err) {
-    throw new Error('Error: 不明なエラー')
+    throw new Error(err.message)
   }
 }
 
 const selectedDeleteUser = async (
-  selected: { title: string; value: string }[]
-): Promise<string> => {
+  selected: {
+    title: string
+    value: { type: string; id?: string; name?: string }
+  }[]
+): Promise<{ type: string; id?: string; name?: string }> => {
   try {
     const onCancel = () => {
       console.error('Error: 選択されませんでした')
@@ -217,53 +346,23 @@ const selectedDeleteUser = async (
   }
 }
 
-const findUsers = async (
-  db: Nedb
-): Promise<{ title: string; value: string }[]> => {
-  try {
-    const selectedUser: { title: string; value: string }[] = await new Promise(
-      (resolve) => {
-        db.find({}, (err, result) => {
-          const selectArray = [
-            {
-              title: 'all',
-              value: 'all'
-            }
-          ]
-          for (let i = 0; i < result.length; i += 1) {
-            selectArray.push({
-              title: result[i].name,
-              value: result[i]._id
-            })
-          }
-          resolve(selectArray)
-        })
-      }
-    )
-    return selectedUser
-  } catch (err) {
-    throw new Error(
-      'Error: パッケージに何か問題があるようです...databaseを削除すると直るかもしれません'
-    )
-  }
-}
-
 export const Logout = async (db: Nedb, path: string): Promise<void> => {
   try {
     const selectedArray = await findUsers(db)
-    const user = await selectedDeleteUser(selectedArray)
-    if (user === 'all') {
+    const { type, id, name } = await selectedDeleteUser(selectedArray)
+    if (type === 'all') {
       fs.unlinkSync(path)
       console.log('Success: 全てのアカウントからログアウトしました')
       return
     }
-    if (user) {
-      if (await logoutUser(db, user, path)) {
+    if (type) {
+      if (await logoutUser(db, id, name)) {
         return
       }
     }
     return
   } catch (err) {
+    db.loadDatabase()
     console.error(err.message)
   }
 }

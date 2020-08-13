@@ -11,9 +11,9 @@ const path = `${__dirname}/configs/database`
 
 const main = async (): Promise<void> => {
   const db = await new Nedb({
-    filename: path,
-    autoload: true
+    filename: path
   })
+  await db.loadDatabase()
 
   const userCheck = await new Promise((resolve) => {
     db.findOne({ selected: true }, (err, doc) => {
