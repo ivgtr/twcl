@@ -3,7 +3,8 @@ import Nedb from 'nedb'
 import pjson from 'pjson'
 
 import tweet from './commands/tweet'
-import { timeline } from './commands/timeline'
+import timeline from './commands/timeline'
+import list from './commands/list'
 import { Login, Logout } from './commands/oauth'
 
 const path = `${__dirname}/configs/database`
@@ -35,6 +36,7 @@ const main = async (): Promise<void> => {
     .option('-lo, --logout', 'ログアウト')
     .option('-t, --tweet [tweet]', 'ツイート')
     .option('-tl, --timeline [user]', 'タイムラインを取得')
+    .option('-li, --list [user/list]', 'リストを取得')
     .option('-c, --console', 'testコマンド')
     .parse(process.argv)
 
@@ -59,6 +61,22 @@ const main = async (): Promise<void> => {
       return
     }
     timeline(db, '')
+    return
+  }
+  if (program.list) {
+    if (typeof program.list === 'string') {
+      const data = program.list.split('/')
+      if (data.length > 1) {
+        list(db, {
+          userName: data[0],
+          listName: data[1]
+        })
+        return
+      }
+      console.error('Error: 入力形式が不正です')
+      return
+    }
+    list(db, {})
     return
   }
   if (program.console) {

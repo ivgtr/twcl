@@ -2,7 +2,8 @@ import axios from 'axios'
 import Nedb from 'nedb'
 import colors from './console'
 
-import { middlewareUrl } from '../configs/configs.json'
+// import { middlewareUrl } from '../configs/configs.json'
+const middlewareUrl = 'http://localhost:5000'
 
 type Token = {
   type?: string
@@ -10,38 +11,6 @@ type Token = {
   accessToken: string
   accessTokenSecret: string
   selected?: boolean
-}
-
-const viewTimeline = (
-  data: {
-    id: string
-    name: string
-    text: string
-  }[]
-) => {
-  data.forEach((item) => {
-    console.log(`${item.name} ${colors.blue(item.id)}\n${item.text}\n`)
-  })
-}
-
-const getTimeline = async (
-  accessToken: string,
-  accessTokenSecret: string,
-  user: string
-) => {
-  try {
-    const { data } = await axios.post(`${middlewareUrl}/getTimeline`, {
-      access_token: accessToken,
-      access_token_secret: accessTokenSecret,
-      user
-    })
-    await viewTimeline(data)
-    return true
-  } catch (err) {
-    throw new Error(
-      'Twitter APIに問題があるようです・・・時間を空けてからもう一度試してみてください。'
-    )
-  }
 }
 
 const checkUser = async (
@@ -70,15 +39,24 @@ const checkUser = async (
   return Token
 }
 
-const timeline = async (db: Nedb, user: string): Promise<void> => {
+const list = async (
+  db: Nedb,
+  data: {
+    userName?: string
+    listName?: string
+  }
+): Promise<void> => {
   try {
     const { accessToken, accessTokenSecret } = await checkUser(db)
-    if (await getTimeline(accessToken, accessTokenSecret, user)) {
+    if (Object.keys(data).length) {
+      const { userName, listName } = data
+      console.log('true', data)
       return
     }
+    console.log('false', data)
   } catch (err) {
     console.error(err.message)
   }
 }
 
-export default timeline
+export default list
