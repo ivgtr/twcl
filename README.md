@@ -5,8 +5,8 @@
 cli上でTwitterする為のツールです
 
 
-## インストール
-
+## インストール  
+[![NPM](https://nodei.co/npm/twcl.png?mini=true)](https://www.npmjs.com/package/twcl)  
 ```
 $ npm i -g twcl
 ```
