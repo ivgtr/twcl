@@ -58,6 +58,17 @@ $ // 入力したリストが表示されます([list]はlistを開いた時のu
 ```
 リストから選択する方はとても楽ですがAPI制限がキツイので直接入力する方が良いかもしれません...  
 リストの一覧を取得するのは最初だけでdatabaseに保存するのも考えています
+##### userChange
+``` javascript
+$ twcl -c // or twcl --change
+$ 変更したいアカウントを選択してください >
+$ // 選択したアカウントに変更されます
+```
+or
+``` javascript
+$ twcl -c [user] // or twcl --change [user]
+$ // 入力されたuse名があればそれに、なければリストが表示されます
+```
 ##### Logout
 ``` javascript
 $ twcl -lo // or twcl --logout
@@ -75,9 +86,10 @@ t -t [tweet] // 世界が早くなりました
 ```  
 
 ## 今後の予定
-- アカウント切替(現在は最後にログインしたアカウントを利用可能)
+- エラー処理を厳格に
+- oauth周りのコードを綺麗に
 - and more...
-
+欲しい機能があればissueまで  
 ## バグ
 バグを発見したら報告してください、対応します
 - [https://github.com/ivgtr/twcl/issues](https://github.com/ivgtr/twcl/issues)
