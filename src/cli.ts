@@ -2,9 +2,12 @@ import program from 'commander'
 import Nedb from 'nedb'
 import pjson from 'pjson'
 
+import colors from './commands/console'
+
 import tweet from './commands/tweet'
 import timeline from './commands/timeline'
 import list from './commands/list'
+import user from './commands/user'
 import { Login, Logout } from './commands/oauth'
 
 const path = `${__dirname}/configs/database`
@@ -37,7 +40,7 @@ const main = async (): Promise<void> => {
     .option('-t, --tweet [tweet]', 'ツイート')
     .option('-tl, --timeline [user]', 'タイムラインを取得')
     .option('-li, --list [user/list]', 'リストを取得')
-    .option('-c, --change', 'アカウント切替')
+    .option('-c, --change [user]', 'アカウント切替')
     .parse(process.argv)
 
   if (program.login) Login(db)
@@ -74,22 +77,23 @@ const main = async (): Promise<void> => {
     return
   }
   if (program.change) {
-    console.log('アカウント切替機能')
-    console.log('実装中')
-    db.find({ selected: true }, async (err, result) => {
-      if (result.length) {
-        console.log(`ログイン中のアカウント: ${result.slice(-1)[0].name}`)
-      } else {
-        console.log('ログインしていません')
-      }
-    })
+    if (typeof program.change === 'string') {
+      user(db, program.change)
+      return
+    }
+    user(db, '')
+    return
   }
   // For default, show help
   const NO_COMMAND_SPECIFIED = process.argv.length <= 2
   if (NO_COMMAND_SPECIFIED) {
     db.find({ selected: true }, async (err, result) => {
       if (result.length) {
-        console.log(`${result.slice(-1)[0].name} でログインしています`)
+        console.log(
+          `${colors.green('>')} ${
+            result.slice(-1)[0].name
+          } でログインしています`
+        )
       } else {
         console.log('ログインしていません')
       }

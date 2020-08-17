@@ -97,7 +97,7 @@ const unSelectDb = async (db: Nedb) => {
           return
         }
         throw new Error(
-          'database登録時にエラーがあったようです...もう一度ログインを試してみてください'
+          'database削除時にエラーがあったようです...もう一度ログインを試してみてください'
         )
       }
     )
@@ -187,46 +187,40 @@ const findUsers = async (
 ): Promise<
   { title: string; value: { type: string; id?: string; name?: string } }[]
 > => {
-  try {
-    const selectedUser: {
-      title: string
-      value: { type: string; id?: string; name?: string }
-    }[] = await new Promise((resolve) => {
-      db.find({}, (err, result) => {
-        if (!err) {
-          const selectArray: {
-            title: string
-            value: { type: string; id?: string; name?: string }
-          }[] = [
-            {
-              title: 'all',
-              value: { type: 'all' }
-            }
-          ]
-          for (let i = 0; i < result.length; i += 1) {
-            selectArray.push({
-              title: result[i].name,
-              value: {
-                type: 'user',
-                id: result[i]._id,
-                name: result[i].name
-              }
-            })
+  const selectedUser: {
+    title: string
+    value: { type: string; id?: string; name?: string }
+  }[] = await new Promise((resolve) => {
+    db.find({}, (err, result) => {
+      if (!err) {
+        const selectArray: {
+          title: string
+          value: { type: string; id?: string; name?: string }
+        }[] = [
+          {
+            title: 'all',
+            value: { type: 'all' }
           }
-          resolve(selectArray)
-          return
+        ]
+        for (let i = 0; i < result.length; i += 1) {
+          selectArray.push({
+            title: result[i].name,
+            value: {
+              type: 'user',
+              id: result[i]._id,
+              name: result[i].name
+            }
+          })
         }
-        throw new Error(
-          'database検索時にエラーがあったようです...もう一度試してみてください'
-        )
-      })
+        resolve(selectArray)
+        return
+      }
+      throw new Error(
+        'database検索時にエラーがあったようです...もう一度試してみてください'
+      )
     })
-    return selectedUser
-  } catch (err) {
-    throw new Error(
-      'Error: パッケージに何か問題があるようです...databaseを削除すると直るかもしれません'
-    )
-  }
+  })
+  return selectedUser
 }
 
 const checkSelectUser = async (db: Nedb): Promise<boolean> => {
