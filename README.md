@@ -1,7 +1,7 @@
 # twcl (cliでTwitterをするやつ)
 [![Twitter Follow](https://img.shields.io/twitter/follow/mawaru_hana?style=social)](https://twitter.com/mawaru_hana) [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE) [![Netlify Status](https://api.netlify.com/api/v1/badges/528913b2-82a9-4d80-89a5-0005a7da157b/deploy-status)](https://github.com/ivgtr/twcl-web) [![CI](https://github.com/ivgtr/twcl-middleware/workflows/CI/badge.svg)](https://github.com/ivgtr/twcl-middleware)
 
-##### これは何?  
+#### これは何?  
 cli上でTwitterする為のツールです
 
 
@@ -16,7 +16,7 @@ $ yarn add -g twcl
 ```
 
 ## 使い方
-##### Login  
+#### Login  
 ``` javascript
 $ twcl -l // or twcl --login
 ```
@@ -26,7 +26,7 @@ $ twcl -l // or twcl --login
 $ ブラウザに表示されたトークンを入力してください > [Token] 
 $ 表示名を入力してください > [Name]
 ```
-##### Tweet
+#### Tweet
 ``` javascript
 $ twcl -t [message] // or twcl --tweet [message]
 ```
@@ -35,7 +35,7 @@ or
 $ twcl -t // or twcl --tweet
 $ ツイート: > [message]
 ```
-##### Timeline
+#### Timeline
 ``` javascript
 $ twcl -tl // or twcl --timeline
 $ // 自分のタイムラインが表示されます(とりあえず最新の10件を取得に固定)
@@ -45,7 +45,7 @@ or
 $ twcl -tl [user] // or twcl --timeline [user]
 $ // 指定したユーザー(id)の最新ツイートが表示されます([id]は@から始まるid)
 ```
-##### List
+#### List
 ``` javascript
 $ twcl -li // or twcl --list
 $ 取得したいリストを選択してください >
@@ -58,7 +58,7 @@ $ // 入力したリストが表示されます([list]はlistを開いた時のu
 ```
 リストから選択する方はとても楽ですがAPI制限がキツイので直接入力する方が良いかもしれません...  
 リストの一覧を取得するのは最初だけでdatabaseに保存するのも考えています
-##### userChange
+#### userChange
 ``` javascript
 $ twcl -c // or twcl --change
 $ 変更したいアカウントを選択してください >
@@ -69,14 +69,15 @@ or
 $ twcl -c [user] // or twcl --change [user]
 $ // 入力されたuse名があればそれに、なければリストが表示されます
 ```
-##### Logout
+#### Logout
 ``` javascript
 $ twcl -lo // or twcl --logout
 $ 削除したいアカウントを選択してください > // all or selected
 ```
 
 ## もっと楽にtwclにアクセスしたいですか？
-aliasを登録することをお勧めします。`.bashrc`や`.zshrc`を開いて以下の一文を入れましょう
+aliasを登録することをお勧めします。  
+`.bashrc`や`.zshrc`を開いて以下の一文を入れましょう
 ``` javascript
 alias t='twcl'
 ```  
