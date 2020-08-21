@@ -4,6 +4,7 @@ import pjson from 'pjson'
 
 import colors from './commands/console'
 
+import { selectedUser } from './commands/db'
 import tweet from './commands/tweet'
 import timeline from './commands/timeline'
 import list from './commands/list'
@@ -87,17 +88,23 @@ const main = async (): Promise<void> => {
   // For default, show help
   const NO_COMMAND_SPECIFIED = process.argv.length <= 2
   if (NO_COMMAND_SPECIFIED) {
-    db.find({ selected: true }, async (err, result) => {
-      if (result.length) {
-        console.log(
-          `${colors.green('>')} ${
-            result.slice(-1)[0].name
-          } でログインしています`
-        )
-      } else {
-        console.log('ログインしていません')
-      }
-    })
+    // db.find({ selected: true }, async (err, result) => {
+    //   if (result.length) {
+    //     console.log(
+    //       `${colors.green('>')} ${
+    //         result.slice(-1)[0].name
+    //       } でログインしています`
+    //     )
+    //   } else {
+    //     console.log('ログインしていません')
+    //   }
+    // })
+    const loginUser = await selectedUser(db)
+    if (loginUser.name) {
+      console.log(`${colors.green('>')} ${loginUser.name} でログインしています`)
+      return
+    }
+    console.log('ログインしていません')
   }
 }
 
