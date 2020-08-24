@@ -1,5 +1,4 @@
 import axios from 'axios'
-import Nedb from 'nedb'
 import prompts from 'prompts'
 
 import colors from './console'
