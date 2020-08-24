@@ -103,7 +103,6 @@ const getList = async (
 }
 
 const list = async (
-  db: Nedb,
   user: user,
   data: {
     listid?: string

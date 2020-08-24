@@ -61,12 +61,12 @@ const main = async (): Promise<void> => {
   }
   if (program.list) {
     if (typeof program.list === 'string') {
-      list(db, loginUser, {
+      list(loginUser, {
         listid: program.list
       })
       return
     }
-    list(db, loginUser, {})
+    list(loginUser, {})
     return
   }
   if (program.change) {
