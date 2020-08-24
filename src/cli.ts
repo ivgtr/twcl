@@ -50,13 +50,13 @@ const main = async (): Promise<void> => {
     if (typeof program.timeline === 'string') {
       if (program.timeline.charAt(0) === '@') {
         const userId = program.timeline.slice(1)
-        timeline(db, userId)
+        timeline(loginUser, userId)
         return
       }
-      timeline(db, program.timeline)
+      timeline(loginUser, program.timeline)
       return
     }
-    timeline(db, '')
+    timeline(loginUser, '')
     return
   }
   if (program.list) {
