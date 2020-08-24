@@ -6,42 +6,17 @@ import colors from './console'
 
 import { middlewareUrl } from '../configs/configs.json'
 
-type Token = {
+type user = {
   type?: string
   name?: string
-  accessToken: string
-  accessTokenSecret: string
-  userid: string
+  accessToken?: string
+  accessTokenSecret?: string
+  userid?: string
   selected?: boolean
+  _id?: string
 }
 
 type list = { id: string; name: string; description: string }
-
-const checkUser = async (
-  db: Nedb
-): Promise<{
-  accessToken: string
-  accessTokenSecret: string
-  userid: string
-}> => {
-  return new Promise((resolve) => {
-    db.find(
-      { selected: true },
-      async (err, result: Token[]): Promise<boolean> => {
-        if (!err) {
-          const { accessToken, accessTokenSecret, userid } = result.slice(-1)[0] // 変更
-          if (accessToken && accessTokenSecret && userid) {
-            resolve({ accessToken, accessTokenSecret, userid })
-          }
-          return
-        }
-        throw new Error(
-          'アカウントが見つからないようです...もう一度ログインを試してみてください'
-        )
-      }
-    )
-  })
-}
 
 const viewListTimeline = (
   data: {
@@ -129,12 +104,13 @@ const getList = async (
 
 const list = async (
   db: Nedb,
+  user: user,
   data: {
     listid?: string
   }
 ): Promise<void> => {
   try {
-    const { accessToken, accessTokenSecret, userid } = await checkUser(db)
+    const { accessToken, accessTokenSecret, userid } = user
     if (Object.keys(data).length) {
       const { listid } = data
       await getList(accessToken, accessTokenSecret, {
