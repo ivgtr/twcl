@@ -1,15 +1,16 @@
 import axios from 'axios'
-import Nedb from 'nedb'
 import prompts from 'prompts'
 
 import { middlewareUrl } from '../configs/configs.json'
 
-type Token = {
+type user = {
   type?: string
   name?: string
-  accessToken: string
-  accessTokenSecret: string
+  accessToken?: string
+  accessTokenSecret?: string
+  userid?: string
   selected?: boolean
+  _id?: string
 }
 
 const inputTweet = async (): Promise<{
@@ -59,36 +60,10 @@ const postTweet = async (
   }
 }
 
-const checkUser = async (
-  db: Nedb
-): Promise<{
-  accessToken?: string
-  accessTokenSecret?: string
-}> => {
-  const Token = await new Promise((resolve) => {
-    db.find(
-      { selected: true },
-      async (err, result: Token[]): Promise<boolean> => {
-        if (!err) {
-          const { accessToken, accessTokenSecret } = result.slice(-1)[0] // 変更
-          if (accessToken && accessTokenSecret) {
-            resolve({ accessToken, accessTokenSecret })
-          }
-          return
-        }
-        throw new Error(
-          'アカウントが見つからないようです...もう一度ログインを試してみてください'
-        )
-      }
-    )
-  })
-  return Token
-}
-
-const Tweet = async (db: Nedb, tweet?: string): Promise<void> => {
+const Tweet = async (user: user, tweet?: string): Promise<void> => {
   try {
     if (tweet) {
-      const { accessToken, accessTokenSecret } = await checkUser(db)
+      const { accessToken, accessTokenSecret } = user
       if (await postTweet(accessToken, accessTokenSecret, tweet)) {
         console.log(`Success: 送信完了\nツイート: ${tweet}`)
         return
@@ -97,7 +72,7 @@ const Tweet = async (db: Nedb, tweet?: string): Promise<void> => {
     }
     const { input } = await inputTweet()
     if (input) {
-      const { accessToken, accessTokenSecret } = await checkUser(db)
+      const { accessToken, accessTokenSecret } = user
       if (await postTweet(accessToken, accessTokenSecret, input)) {
         console.log(`Success: 送信完了\nツイート: ${input}`)
         return

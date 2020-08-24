@@ -40,10 +40,10 @@ const main = async (): Promise<void> => {
   if (program.logout) Logout(db, path)
   if (program.tweet) {
     if (typeof program.tweet === 'string') {
-      tweet(db, program.tweet)
+      tweet(loginUser, program.tweet)
       return
     }
-    tweet(db, '')
+    tweet(loginUser, '')
     return
   }
   if (program.timeline) {
