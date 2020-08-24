@@ -19,20 +19,7 @@ const main = async (): Promise<void> => {
   })
   await db.loadDatabase()
 
-  const userCheck = await new Promise((resolve) => {
-    db.findOne({ selected: true }, (err, doc) => {
-      if (!doc) {
-        resolve(false)
-      } else {
-        resolve(true)
-      }
-    })
-  })
-
-  if (!userCheck) {
-    await Login(db)
-    return
-  }
+  const loginUser = await selectedUser(db)
 
   program
     .version(pjson.version, '-v, --version', 'バージョンを確認')
@@ -43,6 +30,11 @@ const main = async (): Promise<void> => {
     .option('-li, --list [user/list]', 'リストを取得')
     .option('-c, --change [user]', 'アカウント切替')
     .parse(process.argv)
+
+  if (!Object.keys(loginUser).length) {
+    await Login(db)
+    return
+  }
 
   if (program.login) Login(db)
   if (program.logout) Logout(db, path)
@@ -88,18 +80,6 @@ const main = async (): Promise<void> => {
   // For default, show help
   const NO_COMMAND_SPECIFIED = process.argv.length <= 2
   if (NO_COMMAND_SPECIFIED) {
-    // db.find({ selected: true }, async (err, result) => {
-    //   if (result.length) {
-    //     console.log(
-    //       `${colors.green('>')} ${
-    //         result.slice(-1)[0].name
-    //       } でログインしています`
-    //     )
-    //   } else {
-    //     console.log('ログインしていません')
-    //   }
-    // })
-    const loginUser = await selectedUser(db)
     if (loginUser.name) {
       console.log(`${colors.green('>')} ${loginUser.name} でログインしています`)
       return
