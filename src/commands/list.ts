@@ -45,40 +45,34 @@ const getLists = async (
 
     return data
   } catch (err) {
-    throw new Error(
-      'Twitter APIに問題があるようです・・・時間を空けてからもう一度試してみてください。'
-    )
+    throw new Error(err.message)
   }
 }
 
 const selectedList = async (lists: list[]) => {
-  try {
-    const selected = []
-    await lists.forEach((list: list) => {
-      const shap = {
-        title: `${list.name} ${list.description}`,
-        value: list.id
-      }
-      selected.push(shap)
-    })
-    const onCancel = () => {
-      console.error('Error: 選択されませんでした')
+  const selected = []
+  await lists.forEach((list: list) => {
+    const shap = {
+      title: `${list.name} ${list.description}`,
+      value: list.id
     }
-    const { selectedListId } = await prompts(
-      [
-        {
-          type: 'select',
-          name: 'selectedListId',
-          message: '取得したいリストを選択してください',
-          choices: selected
-        }
-      ],
-      { onCancel }
-    )
-    return selectedListId
-  } catch (err) {
-    throw new Error('Error: 選択されませんでした')
+    selected.push(shap)
+  })
+  const onCancel = () => {
+    throw new Error('選択されませんでした')
   }
+  const { selectedListId } = await prompts(
+    [
+      {
+        type: 'select',
+        name: 'selectedListId',
+        message: '取得したいリストを選択してください',
+        choices: selected
+      }
+    ],
+    { onCancel }
+  )
+  return selectedListId
 }
 
 const getList = async (
@@ -87,7 +81,7 @@ const getList = async (
   options: {
     listid?: string
   }
-): Promise<boolean> => {
+): Promise<void> => {
   try {
     const { data } = await axios.post(`${middlewareUrl}/getList`, {
       access_token: accessToken,
@@ -95,7 +89,7 @@ const getList = async (
       options
     })
     await viewListTimeline(data)
-    return true
+    return
   } catch (err) {
     throw new Error(err.message)
   }
@@ -117,13 +111,13 @@ const list = async (
       return
     }
     const lists: list[] = await getLists(accessToken, accessTokenSecret, userid)
-    const selectedListId = await selectedList(lists)
+    const selectedListId: string = await selectedList(lists)
     await getList(accessToken, accessTokenSecret, {
       listid: selectedListId
     })
     return
   } catch (err) {
-    console.error(err.message)
+    console.error(`${colors.red('✖')} ${err.message}`)
   }
 }
 

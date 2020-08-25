@@ -81,7 +81,7 @@ const main = async (): Promise<void> => {
   const NO_COMMAND_SPECIFIED = process.argv.length <= 2
   if (NO_COMMAND_SPECIFIED) {
     if (loginUser.name) {
-      console.log(`${colors.green('>')} ${loginUser.name} でログインしています`)
+      console.log(`${colors.green('✔')} ${loginUser.name} でログインしています`)
       return
     }
     console.log('ログインしていません')

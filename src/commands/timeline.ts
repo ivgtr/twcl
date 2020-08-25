@@ -39,10 +39,7 @@ const getTimeline = async (
     await viewTimeline(data)
     return true
   } catch (err) {
-    console.log(err)
-    throw new Error(
-      'Twitter APIに問題があるようです・・・時間を空けてからもう一度試してみてください。'
-    )
+    throw new Error(err.message)
   }
 }
 
@@ -51,7 +48,7 @@ const timeline = async (user: user, userId: string): Promise<void> => {
     const { accessToken, accessTokenSecret } = user
     await getTimeline(accessToken, accessTokenSecret, userId)
   } catch (err) {
-    console.error(err.message)
+    console.error(`${colors.red('✖')} ${err.message}`)
   }
 }
 

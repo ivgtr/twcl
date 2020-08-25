@@ -55,9 +55,9 @@ const createSelectedArray = (users: user[]): selectedArray[] => {
 
 const selectedChangeUser = async (
   selected: selectedArray[]
-): Promise<{ type: string; id?: string; name?: string }> => {
+): Promise<selectedUser> => {
   const onCancel = () => {
-    throw new Error(`${colors.red('✖')} 選択されませんでした`)
+    throw new Error('選択されませんでした')
   }
   const { user } = await prompts(
     [
@@ -82,7 +82,7 @@ const selectUser = async (db: Nedb): Promise<void> => {
       await setUser(db, name)
     }
   } catch (err) {
-    console.error(err.message)
+    console.error(`${colors.red('✖')} ${err.message}`)
   }
 }
 
@@ -97,7 +97,7 @@ const user = async (db: Nedb, name: string): Promise<void> => {
     }
     selectUser(db)
   } catch (err) {
-    console.error(err.message)
+    console.error(`${colors.red('✖')} ${err.message}`)
   }
 }
 

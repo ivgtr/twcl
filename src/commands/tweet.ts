@@ -1,6 +1,8 @@
 import axios from 'axios'
 import prompts from 'prompts'
 
+import colors from './console'
+
 import { middlewareUrl } from '../configs/configs.json'
 
 type user = {
@@ -16,29 +18,23 @@ type user = {
 const inputTweet = async (): Promise<{
   input: string
 }> => {
-  try {
-    const onCancel = () => {
-      console.error(
-        'Error: 入力内容が確認できませんでした...もう一度最初から入力してください。'
-      )
-    }
-    const { input }: { input: string } = await prompts(
-      [
-        {
-          type: 'text',
-          name: 'input',
-          message: 'ツイート: ',
-          validate: (value) => (!value ? '何か入力してください' : true)
-        }
-      ],
-      { onCancel }
-    )
-    return { input }
-  } catch (err) {
+  const onCancel = () => {
     throw new Error(
       '入力内容が確認できませんでした...もう一度最初から入力してください。'
     )
   }
+  const { input }: { input: string } = await prompts(
+    [
+      {
+        type: 'text',
+        name: 'input',
+        message: 'ツイート: ',
+        validate: (value) => (!value ? '何か入力してください' : true)
+      }
+    ],
+    { onCancel }
+  )
+  return { input }
 }
 
 const postTweet = async (
@@ -54,33 +50,26 @@ const postTweet = async (
     })
     return true
   } catch (err) {
-    throw new Error(
-      'Twitter APIに問題があるようです・・・時間を空けてからもう一度試してみてください。'
-    )
+    throw new Error(err.message)
   }
 }
 
 const Tweet = async (user: user, tweet?: string): Promise<void> => {
   try {
+    const { accessToken, accessTokenSecret } = user
     if (tweet) {
-      const { accessToken, accessTokenSecret } = user
       if (await postTweet(accessToken, accessTokenSecret, tweet)) {
-        console.log(`Success: 送信完了\nツイート: ${tweet}`)
-        return
+        console.log(`${colors.green('✔')} 送信完了\nツイート: ${tweet}`)
       }
-      throw new Error('ツイートの送信にエラーがあったようです...')
+      return
     }
     const { input } = await inputTweet()
-    if (input) {
-      const { accessToken, accessTokenSecret } = user
-      if (await postTweet(accessToken, accessTokenSecret, input)) {
-        console.log(`Success: 送信完了\nツイート: ${input}`)
-        return
-      }
-      throw new Error('ツイートの送信にエラーがあったようです...')
+    if (await postTweet(accessToken, accessTokenSecret, input)) {
+      console.log(`${colors.green('✔')} 送信完了\nツイート: ${input}`)
     }
+    return
   } catch (err) {
-    console.error(err.message)
+    console.error(`${colors.red('✖')} ${err.message}`)
   }
 }
 
