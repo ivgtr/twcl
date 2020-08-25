@@ -10,6 +10,16 @@ import {
   setSelectedUser
 } from './db'
 
+type user = {
+  type?: string
+  name?: string
+  accessToken?: string
+  accessTokenSecret?: string
+  userid?: string
+  selected?: boolean
+  _id?: string
+}
+
 type selectedArray = {
   title: string
   value: selectedUser
