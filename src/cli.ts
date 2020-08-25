@@ -5,12 +5,7 @@ import pjson from 'pjson'
 import colors from './commands/console'
 
 import { selectedUser } from './commands/db'
-import tweet from './commands/tweet'
-import timeline from './commands/timeline'
-import list from './commands/list'
-import user from './commands/user'
-import { Login } from './commands/oauth'
-import logout from './commands/logout'
+import { tweet, timeline, list, user, login, logout } from './commands'
 
 const path = `${__dirname}/configs/database`
 
@@ -33,11 +28,11 @@ const main = async (): Promise<void> => {
     .parse(process.argv)
 
   if (!Object.keys(loginUser).length) {
-    await Login(db)
+    await login(db)
     return
   }
 
-  if (program.login) Login(db)
+  if (program.login) login(db)
   if (program.logout) logout(db, path)
   if (program.tweet) {
     if (typeof program.tweet === 'string') {
