@@ -2,6 +2,7 @@ import axios from 'axios'
 import Nedb from 'nedb'
 import open from 'open'
 import prompts from 'prompts'
+import ora from 'ora'
 import colors from './console'
 
 import { setUser, unSetSelecte, checkUserName } from './db'
@@ -87,7 +88,9 @@ const getOauthToken = async (): Promise<{
 
 const Login = async (db: Nedb): Promise<void> => {
   try {
+    const spinner = ora('通信中...').start()
     const { oauthToken, oauthTokenSecret } = await getOauthToken()
+    spinner.succeed('準備完了!')
     if (oauthToken && oauthTokenSecret) {
       await open(`${callbackUrl}/authenticate?oauth_token=${oauthToken}`)
     } else {
