@@ -8,6 +8,33 @@ type user = {
   _id?: string
 }
 
+export const setUser = async (
+  db: Nedb,
+  accessToken: string,
+  accessTokenSecret: string,
+  userName: string,
+  id: number
+): Promise<boolean> => {
+  const data = {
+    type: 'user',
+    name: userName,
+    accessToken,
+    accessTokenSecret,
+    userid: id.toString(),
+    selected: true
+  }
+  const result: boolean = await new Promise((resolve) => {
+    db.insert(data, (err) => {
+      if (!err) {
+        resolve(true)
+        return
+      }
+      resolve(false)
+    })
+  })
+  await db.loadDatabase()
+  return result
+}
 export const deleteUser = async (db: Nedb, id: string): Promise<boolean> => {
   const result: boolean = await new Promise((resolve) => {
     db.remove({ _id: id }, { multi: false }, (err) => {
