@@ -1,6 +1,7 @@
 import program from 'commander'
 import Nedb from 'nedb'
 import pjson from 'pjson'
+import updateNotifier from 'update-notifier'
 
 import colors from './commands/console'
 
@@ -10,6 +11,11 @@ import { tweet, timeline, list, user, login, logout } from './commands'
 const path = `${__dirname}/configs/database`
 
 const main = async (): Promise<void> => {
+  updateNotifier({
+    packageName: pjson.name,
+    packageVersion: pjson.version
+  }).notify()
+
   const db = await new Nedb({
     filename: path
   })
