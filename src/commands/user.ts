@@ -1,62 +1,34 @@
 import prompts from 'prompts'
 import colors from './console'
 
-const unSelectDb = async (db: Nedb) => {
-  const data: boolean = await new Promise((resolve) => {
-    db.update(
-      {
-        selected: true
-      },
-      {
-        $set: {
-          selected: false
-        }
-      },
-      {
-        multi: true
-      },
-      (error) => {
-        if (!error) {
-          resolve(true)
-          return
-        }
-        throw new Error(
-          'database削除時にエラーがあったようです...もう一度ログインを試してみてください'
-        )
-      }
-    )
-  })
-  await db.loadDatabase()
-  return data
+import { checkUserName, setSelectedUser, unSetSelecte, getAllUser } from './db'
+
+type user = {
+  type?: string
+  name?: string
+  accessToken?: string
+  accessTokenSecret?: string
+  userid?: string
+  selected?: boolean
+  _id?: string
 }
 
-const setUser = async (db: Nedb, userName: string) => {
-  if (await unSelectDb(db)) {
-    const completed = await new Promise((resolve) => {
-      db.update(
-        {
-          name: userName
-        },
-        {
-          $set: {
-            selected: true
-          }
-        },
-        {},
-        (error) => {
-          if (!error) {
-            resolve(true)
-            return
-          }
-          throw new Error(
-            'database削除時にエラーがあったようです...もう一度ログインを試してみてください'
-          )
-        }
-      )
-    })
+type selectedArray = {
+  title: string
+  value: selectedUser
+}
+
+type selectedUser = {
+  type: string
+  id?: string
+  name?: string
+}
+
+const setUser = async (db: Nedb, name: string) => {
+  if (await unSetSelecte(db)) {
+    const completed = await setSelectedUser(db, name)
     if (completed) {
-      await db.loadDatabase()
-      console.log(`${colors.green('>')} ${userName} にアカウントを変更しました`)
+      console.log(`${colors.green('✔')} ${name} にアカウントを変更しました`)
       return
     }
     throw new Error(
@@ -65,99 +37,63 @@ const setUser = async (db: Nedb, userName: string) => {
   }
 }
 
-const findUsers = async (
-  db: Nedb
-): Promise<
-  { title: string; value: { type: string; id?: string; name?: string } }[]
-> => {
-  const selectedUser: {
-    title: string
-    value: { type: string; id?: string; name?: string }
-  }[] = await new Promise((resolve) => {
-    db.find({}, (err, result) => {
-      if (!err) {
-        const selectArray: {
-          title: string
-          value: { type: string; id?: string; name?: string }
-        }[] = []
-        for (let i = 0; i < result.length; i += 1) {
-          selectArray.push({
-            title: result[i].name,
-            value: {
-              type: 'user',
-              id: result[i]._id,
-              name: result[i].name
-            }
-          })
-        }
-        resolve(selectArray)
-        return
+const createSelectedArray = (users: user[]): selectedArray[] => {
+  const selectArray: selectedArray[] = []
+  for (let i = 0; i < users.length; i += 1) {
+    selectArray.push({
+      title: users[i].name,
+      value: {
+        type: 'user',
+        id: users[i]._id,
+        name: users[i].name
       }
-      throw new Error(
-        'database検索時にエラーがあったようです...もう一度試してみてください'
-      )
     })
-  })
-  return selectedUser
+  }
+
+  return selectArray
 }
 
 const selectedChangeUser = async (
-  selected: {
-    title: string
-    value: { type: string; id?: string; name?: string }
-  }[]
+  selected: selectedArray[]
 ): Promise<{ type: string; id?: string; name?: string }> => {
-  try {
-    const onCancel = () => {
-      throw new Error('Error: 選択されませんでした')
-    }
-    const { user } = await prompts(
-      [
-        {
-          type: 'select',
-          name: 'user',
-          message: '変更したいアカウントを選択してください',
-          choices: selected
-        }
-      ],
-      { onCancel }
-    )
-    return user
-  } catch (err) {
-    throw new Error(err)
+  const onCancel = () => {
+    throw new Error(`${colors.red('✖')} 選択されませんでした`)
   }
-}
-
-const selectUser = async (db: Nedb) => {
-  const selectedArray = await findUsers(db)
-  const { name } = await selectedChangeUser(selectedArray)
-  if (name) {
-    await setUser(db, name)
-  }
-}
-
-const checkUserName = async (db: Nedb, userName: string) => {
-  const selected: any = await new Promise((resolve) => {
-    db.findOne({ name: userName }, (error, result) => {
-      if (!error) {
-        resolve(result)
-        return
+  const { user } = await prompts(
+    [
+      {
+        type: 'select',
+        name: 'user',
+        message: '変更したいアカウントを選択してください',
+        choices: selected
       }
-      throw new Error('Error: あれ')
-    })
-  })
-  if (selected) {
-    await setUser(db, userName)
-    return
-  }
-  selectUser(db)
+    ],
+    { onCancel }
+  )
+  return user
 }
 
-const user = (db: Nedb, name: string): void => {
+const selectUser = async (db: Nedb): Promise<void> => {
+  try {
+    const users = await getAllUser(db)
+    const selectedArray = await createSelectedArray(users)
+    const { name } = await selectedChangeUser(selectedArray)
+    if (name) {
+      await setUser(db, name)
+    }
+  } catch (err) {
+    console.error(err.message)
+  }
+}
+
+const user = async (db: Nedb, name: string): Promise<void> => {
   try {
     if (name) {
-      checkUserName(db, name)
-      return
+      if (await checkUserName(db, name)) {
+        await setUser(db, name)
+        return
+      }
+      console.log(`${colors.red('✖')} 入力した名前は見つかりませんでした`)
     }
     selectUser(db)
   } catch (err) {
