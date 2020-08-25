@@ -1,6 +1,6 @@
 {
   "name": "twcl",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "nodeで作られたcli上のtwitterクライアント",
   "main": "./lib/index.js",
   "preferGlobal": true,
