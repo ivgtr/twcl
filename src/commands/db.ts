@@ -8,6 +8,20 @@ type user = {
   _id?: string
 }
 
+export const deleteUser = async (db: Nedb, id: string): Promise<boolean> => {
+  const result: boolean = await new Promise((resolve) => {
+    db.remove({ _id: id }, { multi: false }, (err) => {
+      if (!err) {
+        resolve(true)
+        return
+      }
+      resolve(false)
+    })
+  })
+  await db.loadDatabase()
+  return result
+}
+
 export const setSelectedUser = async (
   db: Nedb,
   name: string
@@ -70,6 +84,18 @@ export const getAllUser = (db: Nedb): Promise<user[]> => {
         resolve(result)
       } else {
         resolve([])
+      }
+    })
+  })
+}
+
+export const getRandomUser = (db: Nedb): Promise<user> => {
+  return new Promise((resolve) => {
+    db.findOne({}, (err, result) => {
+      if (!err && result) {
+        resolve(result)
+      } else {
+        resolve({})
       }
     })
   })

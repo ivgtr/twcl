@@ -9,7 +9,8 @@ import tweet from './commands/tweet'
 import timeline from './commands/timeline'
 import list from './commands/list'
 import user from './commands/user'
-import { Login, Logout } from './commands/oauth'
+import { Login } from './commands/oauth'
+import logout from './commands/logout'
 
 const path = `${__dirname}/configs/database`
 
@@ -37,7 +38,7 @@ const main = async (): Promise<void> => {
   }
 
   if (program.login) Login(db)
-  if (program.logout) Logout(db, path)
+  if (program.logout) logout(db, path)
   if (program.tweet) {
     if (typeof program.tweet === 'string') {
       tweet(loginUser, program.tweet)
