@@ -35,6 +35,9 @@ const setUser = async (db: Nedb, name: string) => {
       'database登録時にエラーがあったようです...もう一度ログインを試してみてください'
     )
   }
+  throw new Error(
+    'database設定時にエラーがあったようです...もう一度ログインを試してみてください'
+  )
 }
 
 const createSelectedArray = (users: user[]): selectedArray[] => {
