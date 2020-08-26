@@ -4,6 +4,7 @@ import json from 'rollup-plugin-json'
 import babel from 'rollup-plugin-babel'
 import typescript from 'rollup-plugin-typescript2'
 import shebang from 'rollup-plugin-preserve-shebang'
+import { terser } from 'rollup-plugin-terser'
 
 export default {
   input: './src/index.ts',
@@ -35,6 +36,7 @@ export default {
     nodeResolve({ jsnext: true }),
     commonjs(),
     json(),
-    babel()
+    babel(),
+    terser()
   ]
 }
