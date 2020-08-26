@@ -8,3 +8,16 @@ npm-debug.log*
 
 # dotenv environment variables file
 .env
+
+.eslintrc
+
+.babelrc
+
+.gitignore
+
+.npmignore
+
+.rollup.config.js
+
+tsconfig.json
+

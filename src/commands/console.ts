@@ -1,5 +1,5 @@
-const color = (col) => (str) => `\u001b[${col}m${str}\u001b[0m` // 補助関数
-// こっちがメイン
+const color = (col) => (str) => `\u001b[${col}m${str}\u001b[0m`
+
 const colors = {
   black: color('30'),
   red: color('31'),
