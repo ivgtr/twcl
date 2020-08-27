@@ -27,6 +27,8 @@ const getAccessToken = async (
     const { accessToken, accessTokenSecret, id } = request.data
     return { accessToken, accessTokenSecret, id }
   } catch (err) {
+    if (err.response.data.msg) throw new Error(err.response.data.msg)
+
     throw new Error(err.message)
   }
 }
@@ -82,6 +84,8 @@ const getOauthToken = async (): Promise<{
     const { oauthToken, oauthTokenSecret } = request.data
     return { oauthToken, oauthTokenSecret }
   } catch (err) {
+    if (err.response.data.msg) throw new Error(err.response.data.msg)
+
     throw new Error(err.message)
   }
 }

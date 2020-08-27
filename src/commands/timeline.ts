@@ -39,6 +39,8 @@ const getTimeline = async (
     await viewTimeline(data)
     return true
   } catch (err) {
+    if (err.response.data.msg) throw new Error(err.response.data.msg)
+
     throw new Error(err.message)
   }
 }
