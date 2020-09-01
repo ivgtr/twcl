@@ -15,7 +15,6 @@ export default {
   external: [
     'axios',
     'commander',
-    'inquirer',
     'nedb',
     'open',
     'ora',
