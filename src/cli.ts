@@ -12,8 +12,7 @@ const path = `${__dirname}/configs/database`
 
 const main = async (): Promise<void> => {
   updateNotifier({
-    packageName: pjson.name,
-    packageVersion: pjson.version
+    pkg: pjson
   }).notify()
 
   const db = await new Nedb({
