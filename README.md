@@ -16,9 +16,9 @@ $ yarn add -g twcl
 ```
 
 ## 使い方
-#### Login  
+#### アカウント連携  
 ``` javascript
-$ twcl -l // or twcl --login
+$ twcl li // or twcl login
 ```
 ブラウザが開くので連携を許可してください。
 また、一つもアカウントが登録されてない時は自動でloginに移ります。
@@ -26,54 +26,60 @@ $ twcl -l // or twcl --login
 $ ブラウザに表示されたトークンを入力してください > [Token] 
 $ 表示名を入力してください > [Name]
 ```
-#### Tweet
+#### アカウント切替
 ``` javascript
-$ twcl -t [message] // or twcl --tweet [message]
-```
-or  
-``` javascript
-$ twcl -t // or twcl --tweet
-$ ツイート: > [message]
-```
-#### Timeline
-``` javascript
-$ twcl -tl // or twcl --timeline
-$ // 自分のタイムラインが表示されます(とりあえず最新の10件を取得に固定)
-```
-or
-``` javascript
-$ twcl -tl [user] // or twcl --timeline [user]
-$ // 指定したユーザー(id)の最新ツイートが表示されます([id]は@から始まるid)
-```
-#### List
-``` javascript
-$ twcl -li // or twcl --list
-$ 取得したいリストを選択してください >
-$ // 選択したリストが表示されます(とりあえず最新の10件を取得に固定)
-```
-or
-``` javascript
-$ twcl -li [list] // or twcl --list [user/list]
-$ // 入力したリストが表示されます([list]はlistを開いた時のurlのlists/xxxのxxx部分)
-```
-リストから選択する方はとても楽ですがAPI制限がキツイので直接入力する方が良いかもしれません...  
-リストの一覧を取得するのは最初だけでdatabaseに保存するのも考えています
-#### userChange
-``` javascript
-$ twcl -c // or twcl --change
+$ twcl c // or twcl change
 $ 変更したいアカウントを選択してください >
 $ // 選択したアカウントに変更されます
 ```
 or
 ``` javascript
-$ twcl -c [user] // or twcl --change [user]
-$ // 入力されたuse名があればそれに、なければリストが表示されます
+$ twcl c [user] // or twcl change [user]
+$ // 入力されたuser名があればそれに、なければリストが表示されます
 ```
-#### Logout
+#### アカウント削除
 ``` javascript
-$ twcl -lo // or twcl --logout
+$ twcl lo // or twcl logout
 $ 削除したいアカウントを選択してください > // all or selected
 ```
+#### ツイート
+``` javascript
+$ twcl t [message] // or twcl tweet [message]
+```
+or  
+``` javascript
+$ twcl t // or twcl tweet
+$ ツイート: > [message]
+```
+#### TL を見る
+``` javascript
+$ twcl tl -n <num> // or twcl timeline --number <num>
+$ // 自分のタイムラインが表示されます
+$ // numで指定した数、ツイートを取得します(指定しなければ10件)
+```
+or
+``` javascript
+$ twcl tl [user] -n <num> // or twcl timeline [user] --number <num>
+$ // @から始まるidで指定したユーザーの最新ツイートが表示されます
+$ // numで指定した数、ツイートを取得します(指定しなければ10件)
+```
+#### List を見る
+``` javascript
+$ twcl l -n <num> // or twcl list --number <num>
+$ 取得したいリストを選択してください >
+$ // 選択したリストが表示されます(とりあえず最新の10件を取得に固定)
+$ // numで指定した数、ツイートを取得します(指定しなければ10件)
+```
+or
+``` javascript
+$ twcl l [list] -n <num> // or twcl list [user/list] --number <num>
+$ // 入力したリストが表示されます([list]はlistを開いた時のurlのlists/xxxのxxx部分)
+$ // numで指定した数、ツイートを取得します(指定しなければ10件)
+```
+リストから選択する方はとても楽ですがAPI制限がキツイので直接入力する方が良いかもしれません...  
+リストの一覧を取得するのは最初だけでdatabaseに保存するのも考えています
+
+
 
 ## もっと楽にtwclにアクセスしたいですか？
 aliasを登録することをお勧めします。  
@@ -83,7 +89,7 @@ alias t='twcl'
 ```  
 next step
 ``` javascript
-t -t [tweet] // 世界が早くなりました
+t t [tweet] // 世界が早くなりました
 ```  
 
 ## 今後の予定
