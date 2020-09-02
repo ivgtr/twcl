@@ -6,7 +6,7 @@ import updateNotifier from 'update-notifier'
 import colors from './commands/console'
 
 import { selectedUser } from './commands/db'
-import { tweet, timeline, list, user, login, logout } from './commands'
+import { tweet, timeline, list, user, login, logout, search } from './commands'
 
 const path = `${__dirname}/configs/database`
 
@@ -81,6 +81,20 @@ const main = async (): Promise<void> => {
         return
       }
       timeline(loginUser, '', n)
+    })
+
+  program
+    .command('serch [query]')
+    .alias('s')
+    .description('ツイートを検索')
+    .option('-n, --number <num>', '表示するツイート数を指定(MAX:100)')
+    .action((q, options) => {
+      const n = options.number ? options.number : 10
+      if (typeof q === 'string') {
+        search(loginUser, q, n)
+        return
+      }
+      search(loginUser, '', n)
     })
 
   program
