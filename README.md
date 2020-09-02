@@ -51,33 +51,39 @@ or
 $ twcl t // or twcl tweet
 $ ツイート: > [message]
 ```
-#### TL を見る
+#### タイムラインを見る
 ``` javascript
 $ twcl tl -n <num> // or twcl timeline --number <num>
 $ // 自分のタイムラインが表示されます
-$ // numで指定した数、ツイートを取得します(指定しなければ10件)
 ```
 or
 ``` javascript
 $ twcl tl [user] -n <num> // or twcl timeline [user] --number <num>
 $ // @から始まるidで指定したユーザーの最新ツイートが表示されます
-$ // numで指定した数、ツイートを取得します(指定しなければ10件)
 ```
-#### List を見る
+#### リストを見る
 ``` javascript
 $ twcl l -n <num> // or twcl list --number <num>
 $ 取得したいリストを選択してください >
 $ // 選択したリストが表示されます(とりあえず最新の10件を取得に固定)
-$ // numで指定した数、ツイートを取得します(指定しなければ10件)
 ```
 or
 ``` javascript
 $ twcl l [list] -n <num> // or twcl list [user/list] --number <num>
 $ // 入力したリストが表示されます([list]はlistを開いた時のurlのlists/xxxのxxx部分)
-$ // numで指定した数、ツイートを取得します(指定しなければ10件)
 ```
 リストから選択する方はとても楽ですがAPI制限がキツイので直接入力する方が良いかもしれません...  
 リストの一覧を取得するのは最初だけでdatabaseに保存するのも考えています
+#### ツイートを検索
+``` javascript
+$ twcl s [query] -n <num> // or twcl search [query] --number <num>
+$ // 入力したqueryが表示されます
+```
+or
+``` javascript
+$ twcl s [list] -n <num> // or twcl list [user/list] --number <num>
+$ 検索ワード: > [query]
+```
 
 
 
@@ -94,7 +100,6 @@ t t [tweet] // 世界が早くなりました
 
 ## 今後の予定
 - リプライの表示
-- ツイート検索
 - 画像の投稿も可能に
 - and more...
 欲しい機能があればissueまで  
