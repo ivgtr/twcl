@@ -1,4 +1,4 @@
 {
-  "middlewareUrl": "http://localhost:5000",
+  "middlewareUrl": "https://twcl-middleware.herokuapp.com",
   "callbackUrl": "https://api.twitter.com/oauth"
 }
