@@ -28,13 +28,15 @@ const viewTimeline = (
 const getTimeline = async (
   accessToken: string,
   accessTokenSecret: string,
-  userId: string
+  userId: string,
+  num: number
 ) => {
   try {
     const { data } = await axios.post(`${middlewareUrl}/getTimeline`, {
       access_token: accessToken,
       access_token_secret: accessTokenSecret,
-      user: userId
+      user: userId,
+      num
     })
     await viewTimeline(data)
     return true
@@ -45,10 +47,14 @@ const getTimeline = async (
   }
 }
 
-const timeline = async (user: user, userId: string): Promise<void> => {
+const timeline = async (
+  user: user,
+  userId: string,
+  num: number
+): Promise<void> => {
   try {
     const { accessToken, accessTokenSecret } = user
-    await getTimeline(accessToken, accessTokenSecret, userId)
+    await getTimeline(accessToken, accessTokenSecret, userId, num)
   } catch (err) {
     console.error(`${colors.red('✖')} ${err.message}`)
   }

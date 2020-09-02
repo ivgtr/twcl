@@ -82,13 +82,15 @@ const getList = async (
   accessTokenSecret,
   options: {
     listid?: string
-  }
+  },
+  num: number
 ): Promise<void> => {
   try {
     const { data } = await axios.post(`${middlewareUrl}/getList`, {
       access_token: accessToken,
       access_token_secret: accessTokenSecret,
-      options
+      options,
+      num
     })
     await viewListTimeline(data)
     return
@@ -103,22 +105,33 @@ const list = async (
   user: user,
   data: {
     listid?: string
-  }
+  },
+  num: number
 ): Promise<void> => {
   try {
     const { accessToken, accessTokenSecret, userid } = user
     if (Object.keys(data).length) {
       const { listid } = data
-      await getList(accessToken, accessTokenSecret, {
-        listid
-      })
+      await getList(
+        accessToken,
+        accessTokenSecret,
+        {
+          listid
+        },
+        num
+      )
       return
     }
     const lists: list[] = await getLists(accessToken, accessTokenSecret, userid)
     const selectedListId: string = await selectedList(lists)
-    await getList(accessToken, accessTokenSecret, {
-      listid: selectedListId
-    })
+    await getList(
+      accessToken,
+      accessTokenSecret,
+      {
+        listid: selectedListId
+      },
+      num
+    )
     return
   } catch (err) {
     console.error(`${colors.red('✖')} ${err.message}`)

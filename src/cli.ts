@@ -22,62 +22,104 @@ const main = async (): Promise<void> => {
 
   const loginUser = await selectedUser(db)
 
-  program
-    .version(pjson.version, '-v, --version', 'バージョンを確認')
-    .option('-l, --login', 'ログイン')
-    .option('-lo, --logout', 'ログアウト')
-    .option('-t, --tweet [tweet]', 'ツイート')
-    .option('-tl, --timeline [user]', 'タイムラインを取得')
-    .option('-li, --list [user/list]', 'リストを取得')
-    .option('-c, --change [user]', 'アカウント切替')
-    .parse(process.argv)
-
   if (!Object.keys(loginUser).length) {
     await login(db)
     return
   }
 
-  if (program.login) login(db)
-  if (program.logout) logout(db, path)
-  if (program.tweet) {
-    if (typeof program.tweet === 'string') {
-      tweet(loginUser, program.tweet)
-      return
-    }
-    tweet(loginUser, '')
-    return
-  }
-  if (program.timeline) {
-    if (typeof program.timeline === 'string') {
-      if (program.timeline.charAt(0) === '@') {
-        const userId = program.timeline.slice(1)
-        timeline(loginUser, userId)
+  program
+    .command('login')
+    .alias('li')
+    .description('ログイン')
+    .action(() => login(db))
+  program
+    .command('logout')
+    .alias('lo')
+    .description('ログアウト')
+    .action(() => logout(db, path))
+
+  program
+    .command('user')
+    .alias('u')
+    .description('ログイン状況の確認')
+    .action(() => {
+      if (loginUser.name) {
+        console.log(
+          `${colors.green('✔')} ${loginUser.name} でログインしています`
+        )
         return
       }
-      timeline(loginUser, program.timeline)
-      return
-    }
-    timeline(loginUser, '')
-    return
-  }
-  if (program.list) {
-    if (typeof program.list === 'string') {
-      list(loginUser, {
-        listid: program.list
-      })
-      return
-    }
-    list(loginUser, {})
-    return
-  }
-  if (program.change) {
-    if (typeof program.change === 'string') {
-      user(db, program.change)
-      return
-    }
-    user(db, '')
-    return
-  }
+      console.log('ログインしていません')
+    })
+
+  program
+    .command('tweet [tweet]')
+    .alias('t')
+    .description('ツイートする')
+    .action((t) => {
+      if (typeof t === 'string') {
+        tweet(loginUser, t)
+        return
+      }
+      tweet(loginUser, '')
+    })
+
+  program
+    .command('timeline [user]')
+    .alias('tl')
+    .description('タイムラインを表示')
+    .option('-n, --number <num>', '表示するツイート数を指定(MAX:100)')
+    .action((id, options) => {
+      const n = options.number ? options.number : 10
+      if (typeof id === 'string') {
+        if (id.charAt(0) === '@') {
+          const userId = id.slice(1)
+          timeline(loginUser, userId, n)
+          return
+        }
+        timeline(loginUser, id, n)
+        return
+      }
+      timeline(loginUser, '', n)
+    })
+
+  program
+    .command('list [listId]')
+    .alias('l')
+    .description('リストを表示')
+    .option('-n, --number <num>', '表示するツイート数を指定(MAX:100)')
+    .action((l, options) => {
+      const n = options.number ? options.number : 10
+      if (typeof l === 'string') {
+        list(
+          loginUser,
+          {
+            listid: l
+          },
+          n
+        )
+        return
+      }
+      list(loginUser, {}, n)
+    })
+
+  program
+    .command('change [user]')
+    .alias('c')
+    .description('アカウント切替')
+    .action((c) => {
+      if (typeof c === 'string') {
+        user(db, c)
+        return
+      }
+      user(db, '')
+    })
+
+  program
+    .version(pjson.version, '-v, --version', 'バージョンを確認')
+    .helpOption('-h, --help', 'コマンド一覧を表示')
+    .parse(process.argv)
+
   // For default, show help
   const NO_COMMAND_SPECIFIED = process.argv.length <= 2
   if (NO_COMMAND_SPECIFIED) {
