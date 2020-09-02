@@ -1,7 +1,9 @@
 import axios from 'axios'
+
 import colors from './console'
 
 import { middlewareUrl } from '../configs/configs.json'
+import viewTweet from './viewTweet'
 
 type user = {
   type?: string
@@ -13,24 +15,12 @@ type user = {
   _id?: string
 }
 
-const viewTimeline = (
-  data: {
-    id: string
-    name: string
-    text: string
-  }[]
-) => {
-  data.forEach((item) => {
-    console.log(`${item.name} ${colors.blue(item.id)}\n${item.text}\n`)
-  })
-}
-
 const getTimeline = async (
   accessToken: string,
   accessTokenSecret: string,
   userId: string,
   num: number
-) => {
+): Promise<void> => {
   try {
     const { data } = await axios.post(`${middlewareUrl}/getTimeline`, {
       access_token: accessToken,
@@ -38,8 +28,8 @@ const getTimeline = async (
       user: userId,
       num
     })
-    await viewTimeline(data)
-    return true
+    viewTweet(data.reverse())
+    return
   } catch (err) {
     if (err.response.data.msg) throw new Error(err.response.data.msg)
 

@@ -4,6 +4,7 @@ import prompts from 'prompts'
 import colors from './console'
 
 import { middlewareUrl } from '../configs/configs.json'
+import viewTweet from './viewTweet'
 
 type user = {
   type?: string
@@ -16,18 +17,6 @@ type user = {
 }
 
 type list = { id: string; name: string; description: string }
-
-const viewListTimeline = (
-  data: {
-    id: string
-    name: string
-    text: string
-  }[]
-) => {
-  data.forEach((item) => {
-    console.log(`${item.name} ${colors.blue(item.id)}\n${item.text}\n`)
-  })
-}
 
 const getLists = async (
   accessToken: string,
@@ -92,7 +81,7 @@ const getList = async (
       options,
       num
     })
-    await viewListTimeline(data)
+    viewTweet(data.reverse())
     return
   } catch (err) {
     if (err.response.data.msg) throw new Error(err.response.data.msg)

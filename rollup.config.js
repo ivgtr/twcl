@@ -14,6 +14,7 @@ export default {
   },
   external: [
     'axios',
+    'dayjs',
     'commander',
     'nedb',
     'open',

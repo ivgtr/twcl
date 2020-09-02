@@ -4,6 +4,7 @@ import prompts from 'prompts'
 import colors from './console'
 
 import { middlewareUrl } from '../configs/configs.json'
+import viewTweet from './viewTweet'
 
 type user = {
   type?: string
@@ -13,18 +14,6 @@ type user = {
   userid?: string
   selected?: boolean
   _id?: string
-}
-
-const viewTimeline = (
-  data: {
-    id: string
-    name: string
-    text: string
-  }[]
-) => {
-  data.forEach((item) => {
-    console.log(`${item.name} ${colors.blue(item.id)}\n${item.text}\n`)
-  })
 }
 
 const inputQuery = async (): Promise<{
@@ -54,7 +43,7 @@ const getSearch = async (
   accessTokenSecret: string,
   q: string,
   num: number
-) => {
+): Promise<void> => {
   try {
     const { data } = await axios.post(`${middlewareUrl}/getSearch`, {
       access_token: accessToken,
@@ -62,8 +51,8 @@ const getSearch = async (
       q,
       num
     })
-    await viewTimeline(data)
-    return true
+    viewTweet(data.reverse())
+    return
   } catch (err) {
     if (err.response.data.msg) throw new Error(err.response.data.msg)
 
