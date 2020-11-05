@@ -3,27 +3,6 @@ import colors from './console'
 
 import { checkUserName, setSelectedUser, unSetSelecte, getAllUser } from './db'
 
-type user = {
-  type?: string
-  name?: string
-  accessToken?: string
-  accessTokenSecret?: string
-  userid?: string
-  selected?: boolean
-  _id?: string
-}
-
-type selectedArray = {
-  title: string
-  value: selectedUser
-}
-
-type selectedUser = {
-  type: string
-  id?: string
-  name?: string
-}
-
 const setUser = async (db: Nedb, name: string) => {
   if (await unSetSelecte(db)) {
     const completed = await setSelectedUser(db, name)
@@ -40,7 +19,7 @@ const setUser = async (db: Nedb, name: string) => {
   )
 }
 
-const createSelectedArray = (users: user[]): selectedArray[] => {
+const createSelectedArray = (users: userData[]): selectedArray[] => {
   const selectArray: selectedArray[] = []
   for (let i = 0; i < users.length; i += 1) {
     selectArray.push({

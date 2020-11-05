@@ -1,13 +1,3 @@
-type user = {
-  type?: string
-  name?: string
-  accessToken?: string
-  accessTokenSecret?: string
-  userid?: string
-  selected?: boolean
-  _id?: string
-}
-
 export const setUser = async (
   db: Nedb,
   accessToken: string,
@@ -104,7 +94,7 @@ export const unSetSelecte = async (db: Nedb): Promise<boolean> => {
   return data
 }
 
-export const getAllUser = (db: Nedb): Promise<user[]> => {
+export const getAllUser = (db: Nedb): Promise<userData[]> => {
   return new Promise((resolve) => {
     db.find({}, (err, result) => {
       if (!err && result) {
@@ -116,7 +106,7 @@ export const getAllUser = (db: Nedb): Promise<user[]> => {
   })
 }
 
-export const getRandomUser = (db: Nedb): Promise<user> => {
+export const getRandomUser = (db: Nedb): Promise<userData> => {
   return new Promise((resolve) => {
     db.findOne({}, (err, result) => {
       if (!err && result) {
@@ -140,7 +130,7 @@ export const checkUserName = (db: Nedb, name: string): Promise<boolean> => {
   })
 }
 
-export const selectedUser = async (db: Nedb): Promise<user> => {
+export const selectedUser = async (db: Nedb): Promise<userData> => {
   const user = await new Promise((resolve) => {
     db.findOne({ selected: true }, (err, result) => {
       if (!err && result) {
@@ -154,9 +144,9 @@ export const selectedUser = async (db: Nedb): Promise<user> => {
   return user
 }
 
-export const getAllUsers = async (db: Nedb): Promise<user[]> => {
-  const user: user[] = await new Promise((resolve) => {
-    db.find({}, (err, result: user[]) => {
+export const getAllUsers = async (db: Nedb): Promise<userData[]> => {
+  const user: userData[] = await new Promise((resolve) => {
+    db.find({}, (err, result: userData[]) => {
       if (!err && result) {
         resolve(result)
       } else {

@@ -5,16 +5,6 @@ import colors from './console'
 import { middlewareUrl } from '../configs/configs.json'
 import viewTweet from './viewTweet'
 
-type user = {
-  type?: string
-  name?: string
-  accessToken?: string
-  accessTokenSecret?: string
-  userid?: string
-  selected?: boolean
-  _id?: string
-}
-
 const getTimeline = async (
   accessToken: string,
   accessTokenSecret: string,
@@ -38,7 +28,7 @@ const getTimeline = async (
 }
 
 const timeline = async (
-  user: user,
+  user: userData,
   userId: string,
   num: number
 ): Promise<void> => {

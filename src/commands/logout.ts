@@ -10,27 +10,6 @@ import {
   setSelectedUser
 } from './db'
 
-type user = {
-  type?: string
-  name?: string
-  accessToken?: string
-  accessTokenSecret?: string
-  userid?: string
-  selected?: boolean
-  _id?: string
-}
-
-type selectedArray = {
-  title: string
-  value: selectedUser
-}
-
-type selectedUser = {
-  type: string
-  id?: string
-  name?: string
-}
-
 const deleteSelectedUser = async (
   db: Nedb,
   id: string,
@@ -77,7 +56,7 @@ const selectedDeleteUser = async (
   return user
 }
 
-const createSelectedArray = (users: user[]): selectedArray[] => {
+const createSelectedArray = (users: userData[]): selectedArray[] => {
   const selectArray: selectedArray[] = [
     {
       title: 'all',

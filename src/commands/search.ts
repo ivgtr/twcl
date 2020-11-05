@@ -6,16 +6,6 @@ import colors from './console'
 import { middlewareUrl } from '../configs/configs.json'
 import viewTweet from './viewTweet'
 
-type user = {
-  type?: string
-  name?: string
-  accessToken?: string
-  accessTokenSecret?: string
-  userid?: string
-  selected?: boolean
-  _id?: string
-}
-
 const inputQuery = async (): Promise<{
   input: string
 }> => {
@@ -60,7 +50,11 @@ const getSearch = async (
   }
 }
 
-const search = async (user: user, q: string, num: number): Promise<void> => {
+const search = async (
+  user: userData,
+  q: string,
+  num: number
+): Promise<void> => {
   try {
     const { accessToken, accessTokenSecret } = user
     if (q) {

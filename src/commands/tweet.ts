@@ -5,16 +5,6 @@ import colors from './console'
 
 import { middlewareUrl } from '../configs/configs.json'
 
-type user = {
-  type?: string
-  name?: string
-  accessToken?: string
-  accessTokenSecret?: string
-  userid?: string
-  selected?: boolean
-  _id?: string
-}
-
 const inputTweet = async (): Promise<{
   input: string
 }> => {
@@ -56,7 +46,7 @@ const postTweet = async (
   }
 }
 
-const Tweet = async (user: user, tweet?: string): Promise<void> => {
+const Tweet = async (user: userData, tweet?: string): Promise<void> => {
   try {
     const { accessToken, accessTokenSecret } = user
     if (tweet) {

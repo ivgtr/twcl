@@ -6,23 +6,11 @@ import colors from './console'
 import { middlewareUrl } from '../configs/configs.json'
 import viewTweet from './viewTweet'
 
-type user = {
-  type?: string
-  name?: string
-  accessToken?: string
-  accessTokenSecret?: string
-  userid?: string
-  selected?: boolean
-  _id?: string
-}
-
-type list = { id: string; name: string; description: string }
-
 const getLists = async (
   accessToken: string,
   accessTokenSecret: string,
   userid: string
-): Promise<list[]> => {
+): Promise<listData[]> => {
   try {
     const { data } = await axios.post(`${middlewareUrl}/getList`, {
       access_token: accessToken,
@@ -40,9 +28,9 @@ const getLists = async (
   }
 }
 
-const selectedList = async (lists: list[]) => {
+const selectedList = async (lists: listData[]) => {
   const selected = []
-  await lists.forEach((list: list) => {
+  await lists.forEach((list: listData) => {
     const shap = {
       title: `${list.name} ${list.description}`,
       value: list.id
@@ -91,7 +79,7 @@ const getList = async (
 }
 
 const list = async (
-  user: user,
+  user: userData,
   data: {
     listid?: string
   },
@@ -111,7 +99,11 @@ const list = async (
       )
       return
     }
-    const lists: list[] = await getLists(accessToken, accessTokenSecret, userid)
+    const lists: listData[] = await getLists(
+      accessToken,
+      accessTokenSecret,
+      userid
+    )
     const selectedListId: string = await selectedList(lists)
     await getList(
       accessToken,
