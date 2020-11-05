@@ -1,5 +1,5 @@
 {
-  "extends": ["eslint-config-metamo","eslint-config-metamo/ts"],
+  "extends": ["eslint-config-sumikko","eslint-config-sumikko/ts"],
   "rules": {
     "no-underscore-dangle":0
   }
