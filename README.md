@@ -1,8 +1,8 @@
-# twcl (cliでTwitterをするやつ)
+# twcl (twitter-cli)
 [![Twitter Follow](https://img.shields.io/twitter/follow/mawaru_hana?style=social)](https://twitter.com/mawaru_hana) [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE) [![Netlify Status](https://api.netlify.com/api/v1/badges/528913b2-82a9-4d80-89a5-0005a7da157b/deploy-status)](https://github.com/ivgtr/twcl-web) [![CI](https://github.com/ivgtr/twcl-middleware/workflows/CI/badge.svg)](https://github.com/ivgtr/twcl-middleware)
 
 #### これは何?  
-cli上でTwitterする為のツールです
+cliでTwitterをする為のclientです
 
 
 ## インストール  
@@ -99,10 +99,11 @@ t t [tweet] // 世界が早くなりました
 ```  
 
 ## 今後の予定
-- リプライの表示
-- 画像の投稿も可能に
-- and more...
+
+- TwitterAPI2.0の内容が充実し次第login周りの改修とrefactoring予定です
+
 欲しい機能があればissueまで  
+
 ## バグ
 バグを発見したら報告してください、対応します
 - [https://github.com/ivgtr/twcl/issues](https://github.com/ivgtr/twcl/issues)
