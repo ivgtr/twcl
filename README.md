@@ -6,14 +6,20 @@
 
 ---
 
-## Install
+## Install v1
 ```shell
 $ npm install -g twcl
 ```
-
-## Usages
-
-coming soon
+ 
+## Waiting for v2
+ユーザーに代わってリクエストを発行するには、未だにOAuth1.0a が必要  
+Twitter API v2 が将来、[対応するらしい](https://trello.com/b/myf7rKwV/twitter-developer-platform-roadmap)のでそれを待つ  
+### 課題
+- ユーザー認証後のリダイレクト時にクライアントに認可情報を伝える方法が思いつかない
+  - 現在はユーザーにToken をコピペして貰って、クライアントに伝えてる
+  - PIN入力で認可情報をゲットできそうならそっちでもいいかも
+- コマンドのベストが定まらない
+  - `twcl tweet -t`とかって長すぎる
 
 ## License
 MIT ©[ivgtr](https://github.com/ivgtr)

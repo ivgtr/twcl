@@ -1,7 +1,7 @@
 {
   "name": "twcl",
   "version": "1.5.3",
-  "description": "cliのtwitterクライアント",
+  "description": "simple Twitter client in cli.",
   "main": "./lib/index.js",
   "preferGlobal": true,
   "bin": {
