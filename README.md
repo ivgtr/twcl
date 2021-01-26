@@ -6,6 +6,8 @@
 
 ---
 
+> 🐧 Web developer's PC has node.js installed, and since he is working with VSCode, Needed a node.js Twitter Client in cli...
+
 ## Install v1
 ```shell
 $ npm install -g twcl
@@ -18,11 +20,17 @@ Twitter API v2 が将来、[対応するらしい](https://trello.com/b/myf7rKwV
 - ユーザー認証後のリダイレクト時にクライアントに認可情報を伝える方法が思いつかない
   - 現在はユーザーにToken をコピペして貰って、クライアントに伝えてる
   - PIN入力で認可情報をゲットできそうならそっちでもいいかも
+  - 最後の手段はSocket-io
 - コマンドのベストが定まらない
-  - `twcl tweet -t`とかって長すぎる
+  - `twcl tweet -t`?
+- consumer keyを内包する為のBFFのサーバーをどうするか
+  - 現在はherokuだがsleepからの立ち上げが遅い
+  - GASという選択肢
+    - エラーハンドリングに不安が募る
+  - 少なくともherokuからvercelに移行させたい
 
 ## License
 MIT ©[ivgtr](https://github.com/ivgtr)
 
 
-[![Twitter Follow](https://img.shields.io/twitter/follow/mawaru_hana?style=social)](https://twitter.com/mawaru_hana) [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE) [![Donate](https://img.shields.io/badge/%EF%BC%84-support-green.svg?style=flat-square)](https://www.buymeacoffee.com/ivgtr)  
+[![Twitter Follow](https://img.shields.io/twitter/follow/mawaru_hana?style=social)](https://twitter.com/mawaru_hana) [![Twitter Follow](https://img.shields.io/twitter/follow/ivgtr?style=social)](https://twitter.com/ivgtr) [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE) [![Donate](https://img.shields.io/badge/%EF%BC%84-support-green.svg?style=flat-square)](https://www.buymeacoffee.com/ivgtr)  
