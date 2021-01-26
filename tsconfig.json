@@ -3,16 +3,13 @@
     "target": "es2017",
     "module": "commonjs",
     "moduleResolution": "node",
-    "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
-    "strictNullChecks": true,
     "allowJs": true,
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
-    "noImplicitAny": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
@@ -24,12 +21,11 @@
     "resolveJsonModule": true
   },
   "include": [
-    "./src/*",
-    "./src/**/*",
+    "./src/**/*"
   ],
   "exclude": [
     "node_modules",
     "lib",
-    "dist",
+    "dist"
   ]
 }
