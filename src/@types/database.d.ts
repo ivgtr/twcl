@@ -1,6 +1,7 @@
 type UserData = {
-  userName: string
-  userId: string
-  token: string
+  user_name: string
+  user_id: string
+  access_token: string
+  access_token_secret: string
   selected: boolean
 }

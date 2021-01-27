@@ -20,16 +20,23 @@ export class database {
       .then((user) => user)
   }
 
-  setUser() {
+  setUser({ user_name, user_id, access_token, access_token_secret, selected }: UserData) {
     return this.db.insert<UserData>({
-      userName: 'test',
-      userId: 'abc',
-      token: 'adafkaw',
-      selected: true
+      user_name,
+      user_id,
+      access_token,
+      access_token_secret,
+      selected
     })
   }
 
   getAllUser() {
     return this.db.find<UserData[]>({}).then((users) => users)
+  }
+
+  searchUser(user_name: string) {
+    return this.db
+      .findOne<UserData>({ user_name })
+      .then((user) => (user ? true : false))
   }
 }

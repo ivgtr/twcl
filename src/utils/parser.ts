@@ -22,8 +22,9 @@ export const operationUser = async (options: {
   const user = await db.init()
   if (!user) {
     console.log('ユーザーを追加')
-    operationUserLogin(db)
-    return
+    operationUserLogin(db).catch((err) => {
+      console.log(err)
+    })
   } else if (options.add && !options.delete && !options.change) {
     console.log('ユーザーを追加')
     operationUserLogin(db)
@@ -34,7 +35,7 @@ export const operationUser = async (options: {
     console.log('ユーザーを変更')
     operationUserChange()
   } else {
-    console.log(`${chalk.green('✔')} ${user.userName} でログインしています`)
+    console.log(`${chalk.green('✔')} ${user.user_name} でログインしています`)
   }
 }
 export const tweet = (options: { tweet?: string; image?: string }): void => {
