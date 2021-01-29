@@ -21,33 +21,37 @@ const getAccessToken = async (
     .then<{
       accessToken: string
       accessTokenSecret: string
+      id: string
     }>((response) => response.data)
+    .catch(() => {
+      throw new Error('Twitter APIに問題があるようです。時間開けてもう一度お試しください')
+    })
 }
 
 const userInput = async (db: database) => {
   const onCancel = () => {
-    throw new Error('入力内容が確認できませんでした...もう一度最初から入力してください。')
+    throw new Error('Could not confirm your input, Try again.')
   }
   return prompts(
     [
       {
         type: 'text',
         name: 'oauthVerifier',
-        message: 'ブラウザに表示されたトークンを入力してください',
-        validate: (value: string) => (!value ? '何か入力してください' : true)
+        message: 'Please enter the PIN code displayed in Browser.',
+        validate: (value: string) => (!value ? 'Please enter.' : true)
       },
       {
         type: 'text',
         name: 'userName',
-        message: '表示名を入力してください',
+        message: 'Please enter a display name.',
         validate: async (value: string) => {
           if (!value) {
-            return '何か入力してください'
+            return 'Please enter.'
+          } else if (await db.searchUser(value)) {
+            return 'Already in use, Please enter once more.'
+          } else {
+            return true
           }
-          if (await db.searchUser(value)) {
-            return 'すでにその名前は使われています、他の名前を入力してください'
-          }
-          return true
         }
       }
     ],
@@ -59,26 +63,29 @@ const getRequestToken = () => {
   return axios
     .post(`${proxyUrl}/get_request_token`)
     .then<{ oauthToken: string; oauthTokenSecret: string }>((response) => response.data)
+    .catch(() => {
+      throw new Error('Twitter APIに問題があるようです。時間開けてもう一度お試しください')
+    })
 }
 
 export const operationUserLogin = async (db: database) => {
-  const spinner = ora('wait...').start()
+  const spinner = ora('Loading...').start()
   const { oauthToken, oauthTokenSecret } = await getRequestToken()
-  spinner.succeed('準備完了!')
-  if (!oauthToken && !oauthTokenSecret)
-    throw new Error('Twitter APIに問題があるようです。時間開けてもう一度お試しください')
+  spinner.succeed('All set!')
   await open(`${oauthUrl}/authenticate?oauth_token=${oauthToken}`)
   const { oauthVerifier, userName } = await userInput(db)
-  const { accessToken, accessTokenSecret } = await getAccessToken(
+  const { accessToken, accessTokenSecret, id } = await getAccessToken(
     oauthToken,
     oauthTokenSecret,
     oauthVerifier
   )
-  await db.setUser({
-    user_name: userName,
-    user_id: 'userId',
-    access_token: accessToken,
-    access_token_secret: accessTokenSecret,
-    selected: true
+  await db.unSetUser().then(() => {
+    db.setUser({
+      user_name: userName,
+      user_id: id,
+      access_token: accessToken,
+      access_token_secret: accessTokenSecret,
+      selected: true
+    })
   })
 }

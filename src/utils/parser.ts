@@ -11,6 +11,7 @@ import {
   showTweetUser
 } from './commands'
 import { database } from './db'
+import error from './error'
 
 const db = new database()
 
@@ -20,17 +21,11 @@ export const operationUser = async (options: {
   change?: boolean
 }) => {
   const user = await db.init()
-  if (!user) {
-    console.log('ユーザーを追加')
-    operationUserLogin(db).catch((err) => {
-      console.log(err)
-    })
-  } else if (options.add && !options.delete && !options.change) {
-    console.log('ユーザーを追加')
-    operationUserLogin(db)
+  if (!user || (options.add && !options.delete && !options.change)) {
+    operationUserLogin(db).catch(error)
   } else if (!options.add && options.delete && !options.change) {
     console.log('ユーザーを削除')
-    operationUserLogout(db)
+    operationUserLogout(db).catch(error)
   } else if (!options.add && !options.delete && options.change) {
     console.log('ユーザーを変更')
     operationUserChange()

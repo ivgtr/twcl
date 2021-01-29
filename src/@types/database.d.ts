@@ -5,3 +5,14 @@ type UserData = {
   access_token_secret: string
   selected: boolean
 }
+
+type selectedUser = {
+  type: string
+  id: string
+  name: string
+}
+
+type selectedArray = {
+  title: string
+  value: selectedUser
+}

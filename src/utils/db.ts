@@ -21,17 +21,46 @@ export class database {
   }
 
   setUser({ user_name, user_id, access_token, access_token_secret, selected }: UserData) {
-    return this.db.insert<UserData>({
-      user_name,
-      user_id,
-      access_token,
-      access_token_secret,
-      selected
-    })
+    return this.db
+      .insert<UserData>({
+        user_name,
+        user_id,
+        access_token,
+        access_token_secret,
+        selected
+      })
+      .then(() => {
+        this.db.load()
+      })
+  }
+
+  unSetUser() {
+    return this.db
+      .update(
+        { selected: true },
+        {
+          $set: {
+            selected: false
+          }
+        },
+        {
+          multi: true
+        }
+      )
+      .then(() => {
+        this.db.load()
+      })
   }
 
   getAllUser() {
-    return this.db.find<UserData[]>({}).then((users) => users)
+    return this.db.find<UserData>({}).then((users) => users)
+  }
+  deleteUser(user_id: string) {
+    return this.db.remove({ user_id }, { multi: false })
+  }
+
+  deleteAllUser() {
+    return this.db.remove({}, { multi: true })
   }
 
   searchUser(user_name: string) {
