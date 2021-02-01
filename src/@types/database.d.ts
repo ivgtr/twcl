@@ -6,13 +6,13 @@ type UserData = {
   selected: boolean
 }
 
-type selectedUser = {
+type SelectedUser = {
   type: string
   id: string
   name: string
 }
 
-type selectedArray = {
+type SelectedUserArray = {
   title: string
-  value: selectedUser
+  value: SelectedUser
 }

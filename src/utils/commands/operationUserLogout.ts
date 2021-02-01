@@ -3,7 +3,7 @@ import chalk from 'chalk'
 
 import { database } from '../db'
 
-const selectedDeleteUser = (selectedArray: selectedArray[]) => {
+const selectedDeleteUser = (selectedArray: SelectedUserArray[]) => {
   const onCancel = () => {
     throw new Error('Could not confirm your input, Try again.')
   }
@@ -17,11 +17,11 @@ const selectedDeleteUser = (selectedArray: selectedArray[]) => {
       }
     ],
     { onCancel }
-  ).then<{ user: selectedUser }>((input) => input)
+  ).then<{ user: SelectedUser }>((input) => input)
 }
 
-const createSelectedArray = (users: UserData[]): selectedArray[] => {
-  const selectArray: selectedArray[] = [
+const createSelectedArray = (users: UserData[]): SelectedUserArray[] => {
+  const selectArray: SelectedUserArray[] = [
     {
       title: 'all',
       value: { type: 'all', id: 'all', name: 'all' }
