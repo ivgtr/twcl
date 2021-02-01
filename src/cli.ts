@@ -20,8 +20,8 @@ program
   .alias('t')
   .description('Tweet now')
   .option('-t, --tweet <TWEET>', 'Tweet shortcut')
-  .option('-i, --image <FILE_PATH>', 'Attach an image')
-  .action((options: { tweet?: string; image?: string }) => {
+  .option('-f, --filepath <FILE_PATH>', 'Set the path to the image file')
+  .action((options: { tweet?: string; filepath?: string }) => {
     tweet(options)
   })
 
@@ -32,7 +32,7 @@ program
   .option('-t, --timeline', 'Show the your Timeline')
   .option('-l, --list', 'Show the List')
   .option('-u, --user <USER_ID>', 'Show the User')
-  .option('-s, --search <SERCH_WORD>', 'Show the Search result')
+  .option('-s, --search <QUERY>', 'Show the Search result')
   .option('-c, --count <SHOW_TWEET_COUNT>', 'Tweets on display count')
   .action(
     (options: {
