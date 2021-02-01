@@ -4,7 +4,7 @@ import {
   operationUserChange,
   operationUserLogin,
   operationUserLogout,
-  submitTweet,
+  postTweet,
   showTweetList,
   showTweetSerch,
   showTweetTimeline,
@@ -34,13 +34,8 @@ export const operationUser = async (options: {
     console.log(`${chalk.green('✔')} Login as ${user.user_name}`)
   }
 }
-export const tweet = (options: { tweet?: string; image?: string }): void => {
-  if (options.tweet?.length) {
-    console.log('そのまま送信')
-    return
-  }
-  console.log('入力を表示')
-  submitTweet()
+export const tweet = (options: { tweet?: string; filepath?: string }) => {
+  postTweet(options.tweet, options.filepath).catch(error)
 }
 export const showTweet = (options: {
   timeline?: boolean

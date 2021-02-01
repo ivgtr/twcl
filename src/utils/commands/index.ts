@@ -1,7 +1,7 @@
 import { operationUserChange } from './operationUserChange'
 import { operationUserLogin } from './operationUserLogin'
 import { operationUserLogout } from './operationUserLogout'
-import { submitTweet } from './submitTweet'
+import { postTweet } from './postTweet'
 import { showTweetList } from './showTweetList'
 import { showTweetSerch } from './showTweetSerch'
 import { showTweetTimeline } from './showTweetTimeline'
@@ -11,7 +11,7 @@ export {
   operationUserChange,
   operationUserLogin,
   operationUserLogout,
-  submitTweet,
+  postTweet,
   showTweetList,
   showTweetSerch,
   showTweetTimeline,
