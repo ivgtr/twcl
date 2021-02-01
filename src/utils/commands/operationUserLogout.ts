@@ -5,14 +5,14 @@ import { database } from '../db'
 
 const selectedDeleteUser = (selectedArray: SelectedUserArray[]) => {
   const onCancel = () => {
-    throw new Error('Could not confirm your input, Try again.')
+    throw new Error('Could not confirm your input, Try again')
   }
   return prompts(
     [
       {
         type: 'select',
         name: 'user',
-        message: 'Select the account you want to delete.',
+        message: 'Select the account you want to delete',
         choices: selectedArray
       }
     ],
@@ -47,7 +47,7 @@ export const operationUserLogout = async (db: database) => {
   const { user } = await selectedDeleteUser(selectedArray)
   if (user.type === 'all') {
     db.deleteAllUser().then((result) => {
-      console.log(`${chalk.green('✔')} All accounts(${result}) deleted.`)
+      console.log(`${chalk.green('✔')} All accounts(${result}) deleted`)
     })
   } else {
     db.deleteUser(user.id).then(() => {

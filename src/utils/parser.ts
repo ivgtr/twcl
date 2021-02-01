@@ -21,7 +21,10 @@ export const operationUser = async (options: {
   change?: boolean
 }) => {
   const user = await db.init()
-  if (!user || (options.add && !options.delete && !options.change)) {
+  if (!user) {
+    console.log('Not found Account, Register a new user')
+    operationUserLogin(db).catch(error)
+  } else if (options.add && !options.delete && !options.change) {
     operationUserLogin(db).catch(error)
   } else if (!options.add && options.delete && !options.change) {
     console.log('ユーザーを削除')
@@ -30,7 +33,7 @@ export const operationUser = async (options: {
     console.log('ユーザーを変更')
     operationUserChange()
   } else {
-    console.log(`${chalk.green('✔')} ${user.user_name} でログインしています`)
+    console.log(`${chalk.green('✔')} Login as ${user.user_name}`)
   }
 }
 export const tweet = (options: { tweet?: string; image?: string }): void => {
