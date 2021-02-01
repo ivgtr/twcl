@@ -22,12 +22,11 @@ export const operationUser = async (options: {
 }) => {
   const user = await db.init()
   if (!user) {
-    console.log('Not found Account, Register a new user')
+    console.log(`${chalk.red('Not found Account, Register a new User')}`)
     operationUserLogin(db).catch(error)
   } else if (options.add && !options.delete && !options.change) {
     operationUserLogin(db).catch(error)
   } else if (!options.add && options.delete && !options.change) {
-    console.log('ユーザーを削除')
     operationUserLogout(db).catch(error)
   } else if (!options.add && !options.delete && options.change) {
     console.log('ユーザーを変更')

@@ -23,7 +23,7 @@ const selectedDeleteUser = (selectedArray: SelectedUserArray[]) => {
 const createSelectedArray = (users: UserData[]): SelectedUserArray[] => {
   const selectArray: SelectedUserArray[] = [
     {
-      title: 'all',
+      title: 'All User Delete',
       value: { type: 'all', id: 'all', name: 'all' }
     }
   ]
