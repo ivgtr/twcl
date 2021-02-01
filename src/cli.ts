@@ -46,6 +46,18 @@ program
     }
   )
 
+program
+  .command('wzap')
+  .alias('w')
+  .description('Wazap Command')
+  .option('-f, --follow <TWITTER_ID>', 'Follow the Account with all Registered User')
+  .option('-l, --like <TWEET_ID>', 'Like/Favorite the tweet with all Registered User')
+  .option('-r, --retweet <TWEET_ID>', 'Retweet the tweet with all Registered User')
+  .option('-t, --tweet <TWEET>', 'Tweet with all Registered User')
+  .action((options: { follow?: string; like?: string; retweet?: string; tweet?: string }) => {
+    console.log(options)
+  })
+
 const main = (argv: string[]) => {
   updateNotifier({ pkg: pjson }).notify()
 
