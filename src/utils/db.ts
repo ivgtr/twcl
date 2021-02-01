@@ -52,6 +52,24 @@ export class database {
       })
   }
 
+  usedUser(user_name: string) {
+    return this.db
+      .update(
+        { user_name },
+        {
+          $set: {
+            selected: true
+          }
+        },
+        {
+          multi: false
+        }
+      )
+      .then(() => {
+        this.db.load()
+      })
+  }
+
   getAllUser() {
     return this.db.find<UserData>({}).then((users) => users)
   }

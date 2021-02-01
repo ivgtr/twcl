@@ -29,8 +29,7 @@ export const operationUser = async (options: {
   } else if (!options.add && options.delete && !options.change) {
     operationUserLogout(db).catch(error)
   } else if (!options.add && !options.delete && options.change) {
-    console.log('ユーザーを変更')
-    operationUserChange()
+    operationUserChange(db).catch(error)
   } else {
     console.log(`${chalk.green('✔')} Login as ${user.user_name}`)
   }
