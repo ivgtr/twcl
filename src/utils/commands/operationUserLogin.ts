@@ -24,9 +24,6 @@ const getAccessToken = async (
       accessTokenSecret: string
       id: string
     }>((response) => response.data)
-    .catch(() => {
-      throw new Error('Twitter API Error, Try again')
-    })
 }
 
 const userInput = async (db: database) => {
@@ -68,25 +65,36 @@ const getRequestToken = () => {
 
 export const operationUserLogin = async (db: database) => {
   const spinner = ora('Loading...').start()
-  const { oauthToken, oauthTokenSecret } = await getRequestToken().catch(() => {
+  const { oauthToken, oauthTokenSecret } = await getRequestToken().catch((err) => {
     spinner.stop()
-    throw new Error('Twitter API Error, Try again')
+    throw err
   })
   spinner.succeed('All set!')
   await open(`${oauthUrl}/authenticate?oauth_token=${oauthToken}`)
   const { oauthVerifier, userName } = await userInput(db)
+  const _spinner = ora('Loading...').start()
   const { accessToken, accessTokenSecret, id } = await getAccessToken(
     oauthToken,
     oauthTokenSecret,
     oauthVerifier
-  )
-  await db.unSetUser().then(() => {
-    db.setUser({
-      user_name: userName,
-      user_id: id,
-      access_token: accessToken,
-      access_token_secret: accessTokenSecret,
-      selected: true
-    })
+  ).catch((err) => {
+    _spinner.stop()
+    throw err
   })
+  await db
+    .unSetUser()
+    .then(() => {
+      db.setUser({
+        user_name: userName,
+        user_id: id,
+        access_token: accessToken,
+        access_token_secret: accessTokenSecret,
+        selected: true
+      })
+    })
+    .catch((err) => {
+      _spinner.stop()
+      throw new Error(err)
+    })
+  _spinner.succeed(`Login as ${userName}`)
 }
