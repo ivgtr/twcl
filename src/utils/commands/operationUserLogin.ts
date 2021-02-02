@@ -64,14 +64,14 @@ const getRequestToken = () => {
   return axios
     .post(`${proxyUrl}/get_request_token`)
     .then<{ oauthToken: string; oauthTokenSecret: string }>((response) => response.data)
-    .catch(() => {
-      throw new Error('Twitter API Error, Try again')
-    })
 }
 
 export const operationUserLogin = async (db: database) => {
   const spinner = ora('Loading...').start()
-  const { oauthToken, oauthTokenSecret } = await getRequestToken()
+  const { oauthToken, oauthTokenSecret } = await getRequestToken().catch(() => {
+    spinner.stop()
+    throw new Error('Twitter API Error, Try again')
+  })
   spinner.succeed('All set!')
   await open(`${oauthUrl}/authenticate?oauth_token=${oauthToken}`)
   const { oauthVerifier, userName } = await userInput(db)
