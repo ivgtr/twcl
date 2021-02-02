@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 import { program } from 'commander'
 import pjson from 'pjson'
 import updateNotifier from 'update-notifier'
@@ -58,7 +56,7 @@ program
     console.log(options)
   })
 
-const main = (argv: string[]) => {
+export default (argv: string[]) => {
   updateNotifier({ pkg: pjson }).notify()
 
   program
@@ -75,5 +73,3 @@ Example call:
     )
     .parse(argv)
 }
-
-export default main(process.argv)

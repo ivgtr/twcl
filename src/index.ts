@@ -1,1 +1,5 @@
-console.log(process.env[process.platform == 'win32' ? 'USERPROFILE' : 'HOME'])
+#!/usr/bin/env node
+
+import cli from './cli'
+
+export default cli(process.argv)
