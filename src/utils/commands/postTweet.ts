@@ -1,5 +1,5 @@
 import fs from 'fs'
-import prompts from 'prompts'
+import { prompt } from 'inquirer'
 import axios from 'axios'
 // import chalk from 'chalk'
 // import config from '../../configs/config.json'
@@ -41,17 +41,11 @@ const inputTweet = async (): Promise<string> => {
   const onCancel = () => {
     throw new Error('Could not confirm your input, Try again')
   }
-  const { input }: { input: string } = await prompts(
-    [
-      {
-        type: 'text',
-        name: 'input',
-        message: 'Tweet: ',
-        validate: (value) => (!value ? "What's happening?" : true)
-      }
-    ],
-    { onCancel }
-  )
+  const { input } = await prompt<{ input: string }>({
+    type: 'input',
+    message: 'Tweet: ',
+    name: 'input'
+  }).catch(onCancel)
   return input
 }
 
