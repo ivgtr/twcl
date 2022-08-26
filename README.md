@@ -1,5 +1,9 @@
 # twcl (twitter-cli)
 
+## 現在このプロジェクトは動いてないです
+
+中継サーバーをdeployしていたherokuが有料化されて削除したので使えません
+
 #### これは何?  
 cliでTwitterをする為のclientです
 
